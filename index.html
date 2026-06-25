@@ -1,0 +1,3246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valoración Nutricional Pediátrica</title>
+<style>
+:root{
+  --az:#1a5fa8;--azc:#e8f0fb;--azm:#b8d4f0;--azd:#3a6ea0;
+  --ve:#1a7a50;--vec:#e4f5ed;--vem:#8fcfae;
+  --na:#d4720a;--nac:#fdf0e3;
+  --ro:#b52b22;--roc:#fdecea;
+  --am:#c47f00;--amc:#fffbe6;
+  --mo:#7c3aed;--moc:#f3eeff;
+  --gr:#6b7280;--grc:#f4f5f7;--grd:#e5e7eb;
+  --bo:#dde3ec;--tx:#1f2937;--txs:#6b7280;--bl:#fff;
+  --rd:10px;--sh:0 1px 6px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2f8;color:var(--tx);font-size:14px;line-height:1.5}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#0e4a8a 0%,#1a5fa8 50%,#2779d0 100%);color:#fff;box-shadow:0 3px 16px rgba(14,74,138,.35);position:sticky;top:0;z-index:200}
+.hdr-inner{max-width:1040px;margin:0 auto;display:flex;align-items:stretch;flex-wrap:wrap}
+.hdr-brand{padding:12px 20px;display:flex;align-items:center;gap:10px}
+.hdr-brand h1{font-size:16px;font-weight:700;letter-spacing:-.2px}
+.hdr-brand p{font-size:11px;opacity:.7;margin-top:1px}
+.nav{display:flex;align-items:flex-end;gap:2px;padding:0 8px;margin-left:auto;flex-wrap:wrap}
+.nt{padding:9px 15px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border-radius:7px 7px 0 0;transition:all .18s;white-space:nowrap}
+.nt:hover{background:rgba(255,255,255,.2);color:#fff}
+.nt.on{background:#fff;color:var(--az);box-shadow:0 -2px 0 var(--az) inset}
+
+/* WRAP */
+.wrap{max-width:1040px;margin:0 auto;padding:16px}
+.panel{display:none}.panel.on{display:block}
+
+/* CARD */
+.card{background:var(--bl);border:1px solid var(--bo);border-radius:var(--rd);padding:16px 20px;margin-bottom:14px;box-shadow:var(--sh)}
+.card-h{font-size:11.5px;font-weight:700;color:var(--az);text-transform:uppercase;letter-spacing:.6px;padding-bottom:10px;margin-bottom:14px;border-bottom:2px solid var(--azc);display:flex;align-items:center;gap:6px}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:400px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* FORM */
+.fld{display:flex;flex-direction:column;gap:4px}
+.fld label,.fl label{font-size:12px;color:var(--txs);font-weight:500}
+select,input[type=number],input[type=text]{border:1.5px solid var(--bo);border-radius:7px;padding:7px 10px;font-size:13px;background:var(--bl);color:var(--tx);outline:none;transition:border-color .18s,box-shadow .18s;width:100%}
+select:focus,input:focus{border-color:var(--az);box-shadow:0 0 0 3px rgba(26,95,168,.12)}
+.fl{display:flex;gap:8px;align-items:center;margin-bottom:9px;flex-wrap:wrap}
+.fl label{min-width:150px;flex-shrink:0}
+.fl select,.fl input{flex:1;min-width:90px}
+
+/* METRICS */
+.mc{background:var(--grc);border-radius:9px;padding:12px 14px;border:1px solid var(--grd)}
+.mc .v{font-size:19px;font-weight:700;color:var(--tx);line-height:1.2}
+.mc .l{font-size:11px;color:var(--txs);margin-top:3px}
+.mc.az{background:var(--azc);border-color:var(--azm)}.mc.az .v{color:var(--az)}.mc.az .l{color:var(--azd)}
+.mc.ve{background:var(--vec);border-color:var(--vem)}.mc.ve .v{color:var(--ve)}.mc.ve .l{color:#2a8a5e}
+.mc.na{background:var(--nac);border-color:#f0b882}.mc.na .v{color:var(--na)}
+.mc.ro{background:var(--roc);border-color:#f0a09a}.mc.ro .v{color:var(--ro)}
+.mc.mo{background:var(--moc);border-color:#c4a8f8}.mc.mo .v{color:var(--mo)}
+
+/* TAGS */
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.tag{font-size:11px;padding:4px 11px;border-radius:20px;cursor:pointer;border:1.5px solid var(--bo);color:var(--txs);background:var(--bl);white-space:nowrap;transition:all .15s;font-weight:500}
+.tag:hover{border-color:var(--az);color:var(--az);background:var(--azc)}
+.tag.on{background:var(--az);color:#fff;border-color:var(--az);font-weight:600}
+
+/* ALERTS */
+.av{border-radius:8px;padding:10px 14px;font-size:13px;line-height:1.6;margin-top:8px}
+.av.info{background:var(--azc);border-left:3px solid var(--az);color:#1a3a60}
+.av.ok{background:var(--vec);border-left:3px solid var(--ve);color:#0d4a2a}
+.av.warn{background:var(--nac);border-left:3px solid var(--na);color:#7a3a00}
+.av.danger{background:var(--roc);border-left:3px solid var(--ro);color:#6a1010}
+.av.mo{background:var(--moc);border-left:3px solid var(--mo);color:#4a1a90}
+
+/* Z-BADGE */
+.zb{display:inline-block;font-size:11px;padding:2px 8px;border-radius:5px;font-weight:700;margin-left:5px}
+.zb.n{background:var(--vec);color:var(--ve)}
+.zb.w{background:var(--amc);color:var(--am)}
+.zb.d{background:var(--roc);color:var(--ro)}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{background:var(--azc);color:var(--az);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:7px 10px;text-align:left}
+.tbl td{padding:7px 10px;border-bottom:1px solid var(--grc)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td:last-child{font-weight:600;text-align:right}
+.tbl .sh td{background:var(--grc);font-weight:700;font-size:11px;color:var(--az);text-transform:uppercase;letter-spacing:.3px;text-align:left!important;padding:5px 10px}
+
+/* DILUTION TABLE */
+.dlt{width:100%;border-collapse:collapse;font-size:13px}
+.dlt th{background:var(--az);color:#fff;padding:8px 10px;font-size:11.5px;font-weight:600;text-align:center}
+.dlt th:first-child{text-align:left}
+.dlt td{padding:7px 10px;border-bottom:1px solid var(--bo);text-align:center}
+.dlt td:first-child{text-align:left;font-weight:500;color:var(--txs)}
+.dlt .hl td{background:var(--azc);font-weight:700;color:var(--az)}
+.dlt tr:hover td{background:var(--grc)}
+
+/* PBAR */
+.pb{height:9px;border-radius:5px;background:var(--grd);overflow:hidden;margin-top:5px}
+.pf{height:100%;border-radius:5px;transition:width .5s}
+.pf.ok{background:var(--ve)}.pf.w{background:var(--am)}.pf.lo{background:var(--na)}.pf.hi{background:var(--ro)}
+
+/* STATUS */
+.sok{color:var(--ve);font-weight:700}.slo{color:var(--na);font-weight:700}.shi{color:var(--ro);font-weight:700}.sw{color:var(--am);font-weight:700}
+
+/* BASE EDIT */
+.be{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--grc);border-radius:8px;padding:9px 12px;margin:8px 0}
+.be label{font-size:12px;color:var(--txs);min-width:auto}
+.be input{width:70px;flex:none;font-size:12px;padding:5px 8px}
+.chip{font-size:11px;padding:3px 9px;border-radius:4px;background:var(--azc);color:var(--az);font-weight:600}
+
+/* MOD */
+.mg{display:grid;grid-template-columns:2fr 65px 65px 65px 30px;gap:5px;align-items:center;margin-bottom:5px}
+.mh{font-size:11px;color:var(--txs);text-align:center}
+.mg select,.mg input{font-size:12px;padding:5px 6px;min-width:0}
+.rbtn{background:none;border:1px solid #fca5a5;color:var(--ro);border-radius:6px;padding:4px 7px;cursor:pointer;font-size:13px;line-height:1}
+.rbtn:hover{background:var(--roc)}
+.abtn{background:none;border:1.5px dashed var(--bo);color:var(--txs);border-radius:8px;padding:7px;width:100%;cursor:pointer;font-size:13px;margin-top:6px;transition:all .15s}
+.abtn:hover{background:var(--grc);border-color:var(--az);color:var(--az)}
+
+.div{border:none;border-top:1px solid var(--grd);margin:13px 0}
+.sub{font-size:12px;font-weight:700;color:var(--az);margin:14px 0 8px;padding-left:5px;border-left:3px solid var(--az)}
+.nota{font-size:11.5px;color:var(--txs);font-style:italic;margin-top:6px;line-height:1.5}
+
+/* CURVE SELECTOR */
+.curve-box{background:linear-gradient(135deg,var(--moc),var(--azc));border:1.5px solid var(--azm);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.curve-box h4{font-size:13px;font-weight:700;color:var(--mo);margin-bottom:10px}
+.curve-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:500px){.curve-grid{grid-template-columns:1fr}}
+.curve-card{background:#fff;border:1.5px solid var(--bo);border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .15s}
+.curve-card:hover{border-color:var(--mo);background:var(--moc)}
+.curve-card.on{border-color:var(--mo);background:var(--moc);box-shadow:0 0 0 2px rgba(124,58,237,.15)}
+.curve-card .ct{font-size:12px;font-weight:600;color:var(--tx)}
+.curve-card .cs{font-size:11px;color:var(--txs);margin-top:2px}
+.curve-card .ca{font-size:10px;color:var(--mo);margin-top:3px;font-style:italic}
+
+/* COMPARISON TABLE */
+.comp-tbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.comp-tbl th{background:#334155;color:#fff;padding:7px 10px;font-size:11px;font-weight:600;text-align:center}
+.comp-tbl th:first-child{text-align:left}
+.comp-tbl td{padding:7px 10px;border-bottom:1px solid var(--grd);text-align:center}
+.comp-tbl td:first-child{text-align:left;font-weight:600;color:var(--tx)}
+.comp-tbl .best{background:#f0fdf4;font-weight:700;color:var(--ve)}
+/* DIAGNÓSTICO */
+.dx-cat{margin-bottom:14px}
+.dx-cat-title{font-size:11px;font-weight:700;color:var(--az);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;padding-left:5px;border-left:3px solid var(--az)}
+.dx-tags{display:flex;gap:6px;flex-wrap:wrap}
+.dx-tag{font-size:12px;padding:5px 12px;border-radius:20px;cursor:pointer;border:1.5px solid var(--bo);color:var(--txs);background:var(--bl);transition:all .15s;white-space:nowrap}
+.dx-tag:hover{border-color:var(--az);color:var(--az);background:var(--azc)}
+.dx-tag.on{background:var(--az);color:#fff;border-color:var(--az);font-weight:600}
+.dx-chip{display:inline-flex;align-items:center;gap:5px;background:var(--azc);border:1px solid var(--azm);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--az);font-weight:500}
+.dx-chip button{background:none;border:none;color:var(--az);cursor:pointer;font-size:14px;line-height:1;padding:0 0 0 2px}
+.dx-plan-section{background:var(--grc);border-radius:8px;padding:11px 14px;margin-bottom:10px;border-left:3px solid var(--az)}
+.dx-plan-section h4{font-size:12px;font-weight:700;color:var(--az);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.dx-warn{background:var(--roc);border-left:3px solid var(--ro);border-radius:0 8px 8px 0;padding:8px 12px;font-size:12.5px;color:var(--ro);margin:4px 0}
+.dx-ok{background:var(--vec);border-left:3px solid var(--ve);border-radius:0 8px 8px 0;padding:8px 12px;font-size:12.5px;color:var(--ve);margin:4px 0}
+.dx-info{background:var(--azc);border-left:3px solid var(--az);border-radius:0 8px 8px 0;padding:8px 12px;font-size:12.5px;color:var(--az);margin:4px 0}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-brand">
+      <div>
+        <h1>🍼 Valoración Nutricional Pediátrica</h1>
+        <p>Hospital del Niño Dr. José Renán Esquivel · Portafolio HDN Junio 2026</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <button class="nt on" onclick="showP('antro',this)">📏 Antropometría</button>
+      <button class="nt" onclick="showP('energia',this)">⚡ Necesidades</button>
+      <button class="nt" onclick="showP('formula',this)">🍼 Fórmulas</button>
+      <button class="nt" onclick="showP('dx',this)">🔬 Diagnóstico</button>
+      <div style="position:relative;display:inline-block" id="export-menu-wrap">
+        <button onclick="toggleExportMenu()" style="background:rgba(255,255,255,.25);color:#fff;font-weight:700;border:1.5px solid rgba(255,255,255,.5);border-radius:8px;padding:7px 16px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px">
+          📄 Exportar <span style="font-size:10px">▼</span>
+        </button>
+        <div id="export-dropdown" style="display:none;position:absolute;right:0;top:110%;background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.18);min-width:170px;z-index:999;overflow:hidden">
+          <button onclick="exportarPDF()" style="width:100%;text-align:left;padding:11px 16px;border:none;background:none;cursor:pointer;font-size:13px;color:#1e293b;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f1f5f9">
+            📄 Exportar PDF
+          </button>
+          <button onclick="exportarWord()" style="width:100%;text-align:left;padding:11px 16px;border:none;background:none;cursor:pointer;font-size:13px;color:#1e293b;display:flex;align-items:center;gap:8px">
+            📝 Exportar Word (.doc)
+          </button>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ══ PANEL GLOBAL PACIENTE ══ -->
+<details class="gp-bar" id="gp-details" open>
+  <summary>
+    <span>👶</span>
+    <span id="gp-title">Datos del Paciente — completa para calcular automáticamente</span>
+    <span class="arr">▶</span>
+  </summary>
+  <div class="gp-inner">
+    <div class="g2" style="margin-bottom:10px">
+      <div class="fld"><label>Nombre / ID (opcional)</label><input type="text" id="nombre" placeholder="Paciente" oninput="syncGP()"></div>
+      <div class="fld"><label>Diagnóstico</label><input type="text" id="dx" placeholder="ej. CIV, PCI GMFCS III" oninput="syncGP()"></div>
+    </div>
+    <div class="g2" style="margin-bottom:10px">
+      <div class="fld">
+        <label>Sexo</label>
+        <select id="sexo" onchange="syncGP()">
+          <option value="">— seleccionar —</option>
+          <option value="M">Masculino</option>
+          <option value="F">Femenino</option>
+        </select>
+      </div>
+      <div class="fld"><label>Peso actual (kg)</label><input type="number" id="peso" min="0.3" max="150" step="0.01" placeholder="ej. 9.80" oninput="syncGP()"></div>
+    </div>
+
+    <!-- FECHAS -->
+    <div class="date-row">
+      <div class="fld">
+        <label>📅 Fecha de nacimiento</label>
+        <input type="date" id="fn" onchange="calcEdad()">
+      </div>
+      <div class="fld">
+        <label>📅 Fecha de evaluación</label>
+        <input type="date" id="fev" onchange="calcEdad()">
+      </div>
+      <div class="fld">
+        <label>📅 Fecha 40 semanas (prematuro)</label>
+        <input type="date" id="f40" onchange="calcEdad()">
+        <span style="font-size:10px;color:var(--txs)">Dejar vacío si no aplica</span>
+      </div>
+    </div>
+
+    <!-- EDAD CALCULADA -->
+    <div id="edad-display" style="display:none;margin-bottom:10px">
+      <div class="g3">
+        <div class="mc az"><div class="v" id="disp-ec">—</div><div class="l">Edad cronológica</div></div>
+        <div class="mc mo" id="disp-corr-card" style="display:none"><div class="v" id="disp-corr">—</div><div class="l">Edad corregida</div></div>
+        <div class="mc"><div class="v" id="disp-m">—</div><div class="l">Meses totales (cronológicos)</div></div>
+      </div>
+      <div class="ec-box" id="ec-nota" style="display:none"></div>
+    </div>
+
+    <!-- MEDIDAS ADICIONALES -->
+    <div class="g3">
+      <div class="fld"><label>Talla / Longitud (cm)</label><input type="number" id="talla" min="30" max="220" step="0.1" placeholder="ej. 75.5" oninput="syncGP()"></div>
+      <div class="fld"><label>Perímetro cefálico (cm)</label><input type="number" id="pc" min="20" max="65" step="0.1" placeholder="ej. 44.5" oninput="syncGP()"></div>
+      <div class="fld"><label>Perímetro braquial (cm)</label><input type="number" id="pb" min="5" max="45" step="0.1" placeholder="ej. 14.0" oninput="syncGP()"></div>
+      <div class="fld"><label>Pliegue tricipital (mm)</label><input type="number" id="pt" min="1" max="50" step="0.1" placeholder="ej. 9.5" oninput="syncGP()"></div>
+      <div class="fld"><label>Talla diana parental (cm)</label><input type="number" id="tdiana" min="100" max="220" step="0.1" placeholder="ej. 168" oninput="syncGP()"></div>
+    </div>
+  </div>
+</details>
+
+<!-- ══ PANEL ANTROPOMETRÍA ══ -->
+<div id="p-antro" class="panel on">
+
+  <!-- Curvas especiales -->
+  <div class="curve-box">
+    <h4>🧬 Selección de curvas de crecimiento</h4>
+    <div class="curve-grid" id="curve-cards"></div>
+  </div>
+
+  <!-- Selector condición especial extra -->
+  <div class="card" id="gmfcs-box" style="display:none">
+    <div class="card-h">🦽 Nivel GMFCS — Parálisis Cerebral (Brooks 2011)</div>
+    <div class="g3">
+      <div class="fld"><label>Nivel GMFCS</label>
+        <select id="gmfcs" onchange="calcA()">
+          <option value="1">I — Camina sin restricciones</option>
+          <option value="2">II — Camina con limitaciones</option>
+          <option value="3">III — Camina con dispositivo de mano</option>
+          <option value="4">IV — Automovilidad limitada</option>
+          <option value="5">V — Transportado en silla de ruedas</option>
+        </select>
+      </div>
+      <div class="fld"><label>Alimentación</label>
+        <select id="gtube" onchange="calcA()">
+          <option value="0">Vía oral</option>
+          <option value="1">Gastrostomía / SNG</option>
+        </select>
+      </div>
+    </div>
+    <p class="nota">Brooks J, et al. Pediatrics 2011;128(2):e299-307. Curvas de peso/edad por nivel GMFCS en 25,545 niños con PCI.</p>
+  </div>
+
+  <!-- Resultados -->
+  <div class="card">
+    <div class="card-h">📊 Índices Antropométricos</div>
+    <div class="g4" style="margin-bottom:12px">
+      <div class="mc az"><div class="v" id="r-imc">—</div><div class="l">IMC (kg/m²)</div></div>
+      <div class="mc az"><div class="v" id="r-ppt">—</div><div class="l">% Peso/Talla (Waterlow)</div></div>
+      <div class="mc az"><div class="v" id="r-ambc">—</div><div class="l">Área Musc. Brazo (cm²)</div></div>
+      <div class="mc az"><div class="v" id="r-gbc">—</div><div class="l">Grasa corp. est. (%)</div></div>
+    </div>
+    <div id="zscores-gen"></div>
+    <div class="div"></div>
+    <div class="sub">Evaluación según curva seleccionada</div>
+    <div id="zscores-esp" class="av info">Selecciona una curva de crecimiento y completa los datos del paciente.</div>
+    <div class="div"></div>
+    <div class="sub">Clasificación nutricional</div>
+    <div id="clasificacion"></div>
+    <div id="diana-box" style="display:none;margin-top:10px"></div>
+  </div>
+
+</div><!-- /antro -->
+
+<!-- ══ PANEL ENERGÍA ══ -->
+<div id="p-energia" class="panel">
+
+  <!-- Condición especial energía -->
+  <div class="card">
+    <div class="card-h">⚙️ Factores modificadores</div>
+    <div class="g2">
+      <div class="fld">
+        <label>Condición especial</label>
+        <select id="e-cond" onchange="onCondChange()">
+          <optgroup label="── Sin condición ──">
+            <option value="0">Sin condición especial (normal)</option>
+          </optgroup>
+          <optgroup label="── Sistema Neurológico ──">
+            <option value="pci">Parálisis Cerebral Infantil (PCI) — por GMFCS</option>
+            <option value="neuro_leve">Daño neurológico leve (epilepsia controlada, retraso leve)</option>
+            <option value="neuro">Daño neurológico moderado-severo (encefalopatía)</option>
+            <option value="tcg">Trauma craneoencefálico grave (TCE)</option>
+            <option value="emm">Enfermedad muscular / miopatía</option>
+          </optgroup>
+          <optgroup label="── Sistema Cardiovascular ──">
+            <option value="cardio">Cardiopatía congénita compensada</option>
+            <option value="cardio_cir">Cardiopatía congénita — postoperatorio cirugía cardíaca</option>
+            <option value="cardio_hemo">Cardiopatía con repercusión hemodinámica (ICC, hipert. pulmonar)</option>
+            <option value="trasplante_c">Trasplante cardíaco (post-trasplante)</option>
+          </optgroup>
+          <optgroup label="── Sistema Respiratorio ──">
+            <option value="cf">Fibrosis Quística (FQ)</option>
+            <option value="dpc">Displasia broncopulmonar / DBP crónica</option>
+            <option value="vm">Ventilación mecánica (VM prolongada)</option>
+            <option value="resp_cronica">Enfermedad respiratoria crónica (asma severa, BPD)</option>
+          </optgroup>
+          <optgroup label="── Sistema Digestivo / Hepático ──">
+            <option value="eii">Enfermedad Inflamatoria Intestinal (EII) — brote activo</option>
+            <option value="sbc">Síndrome de intestino corto / malabsorción severa</option>
+            <option value="hepato">Hepatopatía crónica / cirrosis</option>
+            <option value="trasplante_h">Trasplante hepático (post-trasplante)</option>
+            <option value="pancreatitis">Pancreatitis aguda</option>
+            <option value="fistula">Fístula entero-cutánea de alto gasto</option>
+          </optgroup>
+          <optgroup label="── Sistema Renal ──">
+            <option value="renal_cr">Enfermedad renal crónica (ERC) estadios 3-5</option>
+            <option value="dialisis">Hemodiálisis / diálisis peritoneal</option>
+            <option value="trasplante_r">Trasplante renal (post-trasplante)</option>
+            <option value="sn">Síndrome nefrótico</option>
+          </optgroup>
+          <optgroup label="── Trauma / Cirugía / Quemaduras ──">
+            <option value="cx_programada">Cirugía programada (pre/postoperatorio)</option>
+            <option value="trauma_leve">Trauma leve-moderado</option>
+            <option value="trauma_grave">Politrauma / trauma grave</option>
+            <option value="quemado_m">Quemaduras 10–30% SCQ</option>
+            <option value="quemado_g">Quemaduras &gt;30% SCQ (hipermetabolismo severo)</option>
+          </optgroup>
+          <optgroup label="── Infección / Sepsis ──">
+            <option value="infec_leve">Infección / fiebre leve-moderada</option>
+            <option value="sepsis">Sepsis moderada</option>
+            <option value="sepsis_g">Sepsis grave / shock séptico</option>
+            <option value="covid">COVID-19 / MISC (síndrome inflamatorio multisistémico)</option>
+          </optgroup>
+          <optgroup label="── Oncología ──">
+            <option value="oncologia">Oncología — quimioterapia activa</option>
+            <option value="tmo">Trasplante de médula ósea (TMO/TCMH)</option>
+            <option value="onco_remision">Oncología — remisión / mantenimiento</option>
+          </optgroup>
+          <optgroup label="── Condiciones metabólicas / nutricionales ──">
+            <option value="desnut">Desnutrición aguda severa (catch-up)</option>
+            <option value="desnut_mod">Desnutrición moderada (recuperación)</option>
+            <option value="ecmo">ECMO / soporte vital extracorpóreo</option>
+            <option value="critico">Paciente crítico PICU — fase aguda</option>
+            <option value="critico_rec">Paciente crítico PICU — fase de recuperación</option>
+            <option value="premauro">Prematuridad (RN prematuro hospitalizado)</option>
+          </optgroup>
+          <optgroup label="── Síndromes genéticos ──">
+            <option value="down">Síndrome de Down (trisomía 21)</option>
+            <option value="turner">Síndrome de Turner</option>
+            <option value="prader">Síndrome de Prader-Willi</option>
+            <option value="acondr">Acondroplasia / talla baja desproporcionada</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="fld" id="gmfcs-e-box" style="display:none">
+        <label>Nivel GMFCS (PCI)</label>
+        <select id="e-gmfcs" onchange="calcE()">
+          <option value="1">I — Deambula sin ayuda</option>
+          <option value="2">II — Deambula con limitaciones</option>
+          <option value="3">III — Deambula con dispositivo</option>
+          <option value="4">IV — Movilidad asistida</option>
+          <option value="5">V — Postrado / sin movilidad funcional</option>
+        </select>
+      </div>
+    </div>
+    <div class="g2" style="margin-top:10px">
+      <div class="fld">
+        <label>Factor de estrés metabólico</label>
+        <select id="e-estres" onchange="calcE()">
+          <option value="1.0">Sin estrés (×1.0)</option>
+          <option value="1.1">Infección leve / postoperatorio (×1.1)</option>
+          <option value="1.2">Cirugía / trauma leve (×1.2)</option>
+          <option value="1.3">Infección moderada (×1.3)</option>
+          <option value="1.4">Quemado 10–30% / sepsis (×1.4)</option>
+          <option value="1.5">Quemado >30% / sepsis grave (×1.5)</option>
+          <option value="1.6">Politrauma / fallo multiorgánico (×1.6)</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>Factor de actividad</label>
+        <select id="e-act" onchange="calcE()">
+          <option value="1.0">Encamado / sin actividad (×1.0)</option>
+          <option value="1.1">Sedentario hospitalizado (×1.1)</option>
+          <option value="1.2" selected>Actividad normal (×1.2)</option>
+          <option value="1.3">Muy activo (×1.3)</option>
+        </select>
+      </div>
+    </div>
+    <div class="av mo" id="cond-nota" style="display:none;margin-top:10px"></div>
+  </div>
+
+  <!-- Resultados energía -->
+  <div class="card">
+    <div class="card-h">⚡ Gasto Energético — Comparativa OMS vs Schofield</div>
+    <div class="sub" style="margin-top:0">GER — Gasto Energético en Reposo</div>
+    <div class="g4">
+      <div class="mc az"><div class="v" id="e-ger-oms">—</div><div class="l">GER OMS (kcal/día)</div></div>
+      <div class="mc ve"><div class="v" id="e-ger-sch">—</div><div class="l">GER Schofield (kcal/día)</div></div>
+      <div class="mc az"><div class="v" id="e-ger-oms-kg">—</div><div class="l">GER OMS (kcal/kg)</div></div>
+      <div class="mc ve"><div class="v" id="e-ger-sch-kg">—</div><div class="l">GER Schofield (kcal/kg)</div></div>
+    </div>
+    <div class="sub">GET — Gasto Energético Total (con factores)</div>
+    <div class="g4">
+      <div class="mc mo"><div class="v" id="e-get-oms">—</div><div class="l">GET OMS (kcal/día)</div></div>
+      <div class="mc mo"><div class="v" id="e-get-sch">—</div><div class="l">GET Schofield (kcal/día)</div></div>
+      <div class="mc mo"><div class="v" id="e-get-oms-kg">—</div><div class="l">GET OMS (kcal/kg)</div></div>
+      <div class="mc mo"><div class="v" id="e-get-sch-kg">—</div><div class="l">GET Schofield (kcal/kg)</div></div>
+    </div>
+    <div class="sub">Recomendaciones adicionales</div>
+    <div class="g3">
+      <div class="mc"><div class="v" id="e-prot">—</div><div class="l">Proteínas (g/día)</div></div>
+      <div class="mc"><div class="v" id="e-prot-kg">—</div><div class="l">Proteínas (g/kg/día)</div></div>
+      <div class="mc"><div class="v" id="e-vol">—</div><div class="l">Líquidos mL/día (Holliday)</div></div>
+    </div>
+    <div class="av info" id="e-metodo" style="margin-top:10px;display:none"></div>
+  </div>
+
+  <!-- Detalle -->
+  <div class="card">
+    <div class="card-h">🔬 Detalle de cálculo</div>
+    <div class="comp-tbl" style="overflow-x:auto">
+      <table id="e-comp-tbl" class="comp-tbl" style="width:100%">
+        <thead><tr>
+          <th style="text-align:left">Parámetro</th>
+          <th>OMS</th>
+          <th>Schofield</th>
+          <th>Recomendado clínico</th>
+        </tr></thead>
+        <tbody id="e-tbody"></tbody>
+      </table>
+    </div>
+    <p class="nota" style="margin-top:10px">Referencias: OMS (1985) para 0–3 a; Schofield (1985) para 3–18 a. GET = GER × factor estrés × factor actividad × factor condición especial.</p>
+  </div>
+
+</div><!-- /energia -->
+
+<!-- ══ PANEL FÓRMULAS ══ -->
+<div id="p-formula" class="panel">
+
+  <!-- Campos ocultos sincronizados desde panel global -->
+  <input type="hidden" id="f-peso">
+  <select id="f-edad" style="display:none">
+    <option value="">—</option>
+    <option value="pre">Prematuro</option>
+    <option value="0-6m">0–6 meses</option>
+    <option value="6-12m">6–12 meses</option>
+    <option value="1-3a">1–3 años</option>
+    <option value="4-6a">4–6 años</option>
+    <option value="7-10a">7–10 años</option>
+    <option value="11-14a">11–14 años</option>
+    <option value=">14a">&gt;14 años</option>
+  </select>
+
+  <div class="card">
+    <div class="card-h">🧪 Selección de fórmula</div>
+    <div class="tags" id="f-ctags"></div>
+    <div class="fl"><label>Fórmula</label><select id="f-fsel" onchange="onFFC()" style="flex:1"></select></div>
+    <div class="be">
+      <label>Conc. base (%)</label>
+      <input type="number" id="f-ccb" step="0.1" min="0" max="40" oninput="onFBE()">
+      <label>kcal/mL</label>
+      <input type="number" id="f-kmlb" step="0.01" min="0.1" max="3" oninput="calcF()">
+      <label>Prot g/100mL</label>
+      <input type="number" id="f-pgb" step="0.01" min="0" max="15" oninput="calcF()">
+      <span id="f-ftag" class="chip">Fórmula pediátrica</span>
+    </div>
+    <div class="av info" id="f-fnota" style="display:none;margin-top:0"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">💧 Dilución</div>
+    <div class="fl"><label>Modo de dilución</label>
+      <select id="f-dtype" onchange="onFDC()">
+        <option value="med">Por medidas (cuchara / agua)</option>
+        <option value="pct">Por porcentaje (%)</option>
+        <option value="vol">Por gramos en volumen final</option>
+      </select>
+    </div>
+    <div id="fd-med">
+      <div class="fl">
+        <label>Medidas de polvo</label>
+        <input type="number" id="f-cuch" value="1" min="0.25" step="0.25" oninput="calcF()">
+        <span style="font-size:13px;color:var(--txs)">por cada</span>
+        <input type="number" id="f-agua" value="30" min="5" step="5" oninput="calcF()">
+        <span style="font-size:13px;color:var(--txs)">mL agua</span>
+      </div>
+      <div class="fl"><label>Peso por medida (g)</label><input type="number" id="f-gpm" value="4.4" min="1" step="0.1" oninput="calcF()"></div>
+    </div>
+    <div id="fd-pct" style="display:none">
+      <div class="fl"><label>Concentración objetivo (%)</label><input type="number" id="f-pctv" value="13.5" min="1" max="40" step="0.1" oninput="calcF()"></div>
+    </div>
+    <div id="fd-vol" style="display:none">
+      <div class="fl">
+        <label>Volumen final (mL)</label>
+        <input type="number" id="f-volf" value="200" min="10" step="10" oninput="calcF()">
+        <label style="min-width:70px">Polvo (g)</label>
+        <input type="number" id="f-polvog" value="27.6" min="0.1" step="0.1" oninput="calcF()">
+      </div>
+    </div>
+    <div class="fl"><label>Volumen total a preparar (mL)</label><input type="number" id="f-volt" value="200" min="10" step="10" oninput="calcF()"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">➕ Módulos adicionales</div>
+    <div class="mg" style="margin-bottom:4px;grid-template-columns:2fr 55px 55px 65px 65px 30px">
+      <span class="mh" style="text-align:left">Módulo</span>
+      <span class="mh">Cant (g)</span><span class="mh">% conc.</span><span class="mh">kcal/g</span><span class="mh">prot g/g</span><span></span>
+    </div>
+    <div id="f-mlist"></div>
+    <button class="abtn" onclick="addFMod()">+ Agregar módulo calórico</button>
+  </div>
+
+  <div class="card">
+    <div class="card-h">📊 Aporte Nutricional Detallado</div>
+    <div class="g4">
+      <div class="mc az"><div class="v" id="f-rk">—</div><div class="l">kcal totales</div></div>
+      <div class="mc az"><div class="v" id="f-rkml">—</div><div class="l">kcal / mL</div></div>
+      <div class="mc ve"><div class="v" id="f-rp">—</div><div class="l">g proteína</div></div>
+      <div class="mc"><div class="v" id="f-rconc">—</div><div class="l">Concentración</div></div>
+    </div>
+
+    <div id="f-pkg" style="display:none">
+      <div class="sub">Por kg de peso</div>
+      <div class="g4">
+        <div class="mc ve"><div class="v" id="f-rkkg">—</div><div class="l">kcal/kg/día</div></div>
+        <div class="mc ve"><div class="v" id="f-rpkg">—</div><div class="l">g prot/kg/día</div></div>
+        <div class="mc"><div class="v" id="f-rvkg">—</div><div class="l">mL/kg/día</div></div>
+        <div class="mc"><div class="v" id="f-rref" style="font-size:12px;line-height:1.4">—</div><div class="l">Referencia</div></div>
+      </div>
+      <div id="f-refnota" class="av ok" style="display:none;margin-top:10px"></div>
+    </div>
+
+    <div class="div"></div>
+    <div class="sub">Comparativa de diluciones — estándar vs calculada</div>
+    <div style="overflow-x:auto">
+      <table class="dlt">
+        <thead><tr>
+          <th style="text-align:left">Dilución</th>
+          <th>Conc. (%)</th><th>kcal/mL</th><th>kcal totales</th><th>Prot (g)</th>
+          <th id="dth-kkg" style="display:none">kcal/kg/d</th>
+          <th id="dth-pkg" style="display:none">g prot/kg</th>
+        </tr></thead>
+        <tbody id="f-diltbody"></tbody>
+      </table>
+    </div>
+
+    <div class="div"></div>
+    <div class="sub">Detalle del aporte</div>
+    <table class="tbl" id="f-rdet"></table>
+    <div class="av warn" id="f-wbox" style="display:none;margin-top:10px"></div>
+  </div>
+
+</div><!-- /formula -->
+
+<!-- ══ PANEL DIAGNÓSTICO NUTRICIONAL ══ -->
+<div id="p-dx" class="panel">
+
+<div class="card">
+  <div class="card-h">🔬 Diagnóstico Nutricional — Plan Personalizado con IA</div>
+  <p style="font-size:13px;color:var(--txs);margin-bottom:14px">
+    Selecciona uno o más diagnósticos. Se generará un plan nutricional completo basado en la evidencia, 
+    integrado con los datos del paciente ingresados en el panel superior.
+  </p>
+
+  <!-- CATEGORÍAS Y DIAGNÓSTICOS -->
+  <div id="dx-cats"></div>
+
+  <!-- DIAGNÓSTICOS SELECCIONADOS -->
+  <div id="dx-selected" style="display:none;margin-top:12px">
+    <div class="sub" style="margin-top:0">Diagnósticos seleccionados</div>
+    <div id="dx-chips" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
+    <button onclick="generarPlanDx()" id="btn-generar"
+      style="background:linear-gradient(135deg,var(--az),#2779d0);color:#fff;border:none;border-radius:9px;padding:11px 28px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 2px 10px rgba(26,95,168,.3)">
+      <i class="ti ti-sparkles" aria-hidden="true"></i>
+      Generar Plan Nutricional
+    </button>
+  </div>
+</div>
+
+<!-- RESULTADO DEL PLAN -->
+<div id="dx-resultado" style="display:none">
+  <div class="card" id="dx-loading" style="display:none">
+    <div style="display:flex;align-items:center;gap:12px;padding:8px 0">
+      <div style="width:20px;height:20px;border:3px solid var(--azm);border-top-color:var(--az);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0"></div>
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--tx)" id="dx-loading-txt">Analizando diagnósticos y datos del paciente...</div>
+        <div style="font-size:12px;color:var(--txs);margin-top:2px">Consultando base de evidencia clínica</div>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="dx-plan-card" style="display:none">
+    <div class="card-h" id="dx-plan-title">📋 Plan Nutricional</div>
+    <div id="dx-plan-content" style="font-size:13px;line-height:1.8;color:var(--tx)"></div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--grd);font-size:11px;color:var(--txs)">
+      ⚕️ Plan generado con IA basado en evidencia (ASPEN, ESPGHAN, ESPEN). 
+      No reemplaza el criterio clínico. Siempre validar con el equipo tratante.
+    </div>
+  </div>
+</div>
+
+</div><!-- /dx -->
+</div><!-- /wrap -->
+
+<script>
+/* ═══════════════════ NAVEGACIÓN ═══════════════════ */
+function showP(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nt').forEach(t=>t.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+
+/* ═══════════════════ DATOS OMS P50 ═══════════════════ */
+// Peso mediana (kg) 0-60 meses
+const P50_W_M=[3.3,4.5,5.6,6.4,7.0,7.5,7.9,8.3,8.6,8.9,9.2,9.4,9.6,9.9,10.1,10.3,10.5,10.7,10.9,11.1,11.3,11.5,11.7,11.9,12.1,12.4,12.6,12.9,13.1,13.4,13.6,13.9,14.1,14.4,14.6,14.9,15.1,15.4,15.6,15.8,16.0,16.2,16.5,16.7,16.9,17.2,17.4,17.7,18.0,18.2,18.5,18.8,19.0,19.3,19.5,19.7,20.0,20.2,20.5,20.7,21.0];
+const P50_W_F=[3.2,4.2,5.1,5.8,6.4,6.9,7.3,7.6,7.9,8.2,8.5,8.7,8.9,9.2,9.4,9.6,9.8,10.0,10.2,10.4,10.6,10.9,11.1,11.3,11.5,11.7,12.0,12.2,12.5,12.7,13.0,13.3,13.6,13.9,14.2,14.5,14.7,15.0,15.3,15.6,15.9,16.2,16.5,16.7,17.0,17.3,17.6,17.9,18.2,18.5,18.8,19.1,19.4,19.7,19.9,20.2,20.5,20.8,21.1,21.4,21.7];
+// Talla mediana (cm) 0-60 meses
+const P50_H_M=[49.9,54.7,58.4,61.4,63.9,65.9,67.6,69.2,70.6,72.0,73.3,74.5,75.7,76.9,78.0,79.1,80.2,81.2,82.3,83.2,84.2,85.1,86.0,86.9,87.8,88.7,89.6,90.5,91.4,92.2,93.1,93.9,94.7,95.5,96.3,97.1,97.9,98.6,99.4,100.1,100.9,101.6,102.3,103.0,103.7,104.4,105.0,105.7,106.4,107.0,107.7,108.4,109.0,109.7,110.3,110.9,111.6,112.2,112.8,113.4,114.0];
+const P50_H_F=[49.1,53.7,57.1,59.8,62.1,64.0,65.7,67.3,68.7,70.1,71.5,72.8,74.0,75.2,76.4,77.5,78.6,79.7,80.7,81.7,82.7,83.7,84.6,85.5,86.4,87.4,88.2,89.1,90.0,90.8,91.7,92.5,93.3,94.1,94.9,95.7,96.5,97.3,98.0,98.7,99.5,100.2,100.9,101.6,102.3,103.0,103.7,104.4,105.0,105.7,106.3,107.0,107.6,108.2,108.8,109.4,110.0,110.6,111.2,111.7,112.3];
+
+function gP50(arr,m){return arr[Math.min(Math.floor(m),arr.length-1)]||arr[arr.length-1];}
+
+/* ═══════════════════ CURVAS ESPECIALES ═══════════════════ */
+// Datos P50 aproximados de curvas especiales (peso en kg por año, talla en cm por año)
+const CURVAS={
+  oms:{id:'oms',name:'OMS 2006/2007',ref:'OMS Multicentre Growth Reference Study Group (2006)',desc:'Población general. Estándar internacional.',color:'var(--az)',
+    wp_M:P50_W_M, wp_F:P50_W_F, hp_M:P50_H_M, hp_F:P50_H_F, byMonth:true,
+    note:'Curva estándar OMS. No adecuada para valorar crecimiento en síndromes específicos.'},
+  down:{id:'down',name:'Síndrome de Down (Zemel 2015)',ref:'Zemel et al. Pediatrics 2015;136(5):e1204-11. CDC/DSGS.',desc:'Para niños con trisomía 21 (0–20 años).',color:'var(--ve)',
+    // P50 peso/edad (kg) por año 0-18: aproximados de Zemel 2015
+    wp_M_yr:[3.1,9.0,11.5,13.5,15.5,17.5,19.5,21.5,24.0,26.5,29.5,33.5,38.0,43.5,50.0,55.0,60.0,63.0,65.0],
+    wp_F_yr:[3.0,8.5,11.0,13.0,15.0,17.0,19.5,22.0,25.0,28.0,33.0,38.5,45.0,52.0,57.0,61.0,63.0,64.0,65.0],
+    hp_M_yr:[50,72,82,90,96,103,109,115,120,124,128,132,137,143,149,153,156,158,159],
+    hp_F_yr:[49,70,80,87,93,99,104,109,113,117,121,126,132,138,143,147,149,150,151],
+    byMonth:false,
+    note:'Zemel BS et al. Pediatrics 2015. Curvas específicas para trisomía 21. Los niños con SD tienen talla ~10-12 cm y peso ~8-10 kg menos que población general a la misma edad.'},
+  pci:{id:'pci',name:'Parálisis Cerebral — Brooks (2011)',ref:'Brooks J, et al. Pediatrics 2011;128(2):e299-307.',desc:'Por nivel GMFCS. Requiere selección del nivel.',color:'var(--na)',
+    note:'Requiere especificar nivel GMFCS. Referencia de peso/edad por nivel motor (25,545 pacientes, California 1988–2002). Peso P20 es umbral clínico de riesgo para GMFCS IV-V.',
+    // P50 peso por nivel GMFCS y edad (años 2-20) niños - aproximados de Brooks 2011
+    gmfcs_M:{
+      1:[13,15,18,21,24,27,30,34,38,43,48,54,59,63,66,68,69,70],
+      2:[12,14,17,19,22,25,28,31,35,39,43,48,52,55,58,60,61,62],
+      3:[11,13,15,18,20,23,26,29,32,36,40,44,47,50,52,54,55,56],
+      4:[10,12,14,16,18,21,24,27,30,33,37,41,44,47,49,51,52,53],
+      5:[8,10,12,14,16,18,20,22,25,28,31,34,37,39,41,42,43,44],
+    },
+    gmfcs_F:{
+      1:[12,14,17,20,23,26,29,33,37,43,49,54,57,59,60,61,62,62],
+      2:[11,13,16,18,21,24,27,30,34,38,43,48,51,54,56,57,58,58],
+      3:[10,12,14,17,19,22,25,28,31,35,39,43,46,48,50,51,52,52],
+      4:[9,11,13,15,17,20,23,26,29,32,36,40,42,44,46,47,48,48],
+      5:[7,9,11,13,15,17,19,21,24,27,30,33,35,37,38,39,40,40],
+    }},
+  turner:{id:'turner',name:'Síndrome de Turner (Lyon 1985 / Ranke)',ref:'Lyon AJ et al. Arch Dis Child 1985;60:932. Ranke MB 1983.',desc:'Solo niñas. Talla final media ~143–146 cm sin tratamiento.',color:'var(--ro)',
+    // P50 talla/edad niñas Turner (sin GH) - años 1-20 aprox.
+    hp_yr:[72,80,86,92,97,102,107,111,115,118,121,124,127,131,135,138,141,143,144,145],
+    wp_yr:[8.5,10.5,12.5,14.5,16.5,18.5,21.0,24.0,27.0,31.0,36.0,41.0,46.0,50.0,53.0,55.0,56.0,57.0,57.5,58.0],
+    note:'Turner: monosomía 45,X. Talla baja severa (~-2.5 DS). Talla media adulta sin tratamiento 143-146 cm. Con GH puede mejorar 5-10 cm. Evaluar siempre vs curvas Turner, no OMS.'},
+  klinefelter:{id:'klinefelter',name:'Síndrome de Klinefelter — Davis (2025)',ref:'Davis SM et al. Pediatrics 2025;156(6):e2025072193.',desc:'Solo niños 47,XXY. Talla alta, peso variable.',color:'var(--mo)',
+    // P50 talla/edad niños Klinefelter - años 0-18 aprox.
+    hp_yr:[50,74,85,92,99,105,112,118,124,130,136,143,150,157,163,167,170,172,173],
+    wp_yr:[3.3,9.5,12.5,15.0,17.5,20.0,22.5,26.0,30.0,34.0,39.5,46.0,54.0,63.0,70.0,74.0,76.0,77.0,77.5],
+    note:'Klinefelter 47,XXY: ~20% bajo P5 de talla en <4 años (Davis 2025). Talla tiende a superar P50 OMS desde la infancia media. Peso puede ser mayor por tendencia a obesidad central. Publicado diciembre 2025.'},
+  prader:{id:'prader',name:'Síndrome de Prader-Willi',ref:'Butler MG et al. Pediatrics 2015;135(6):e1510-9.',desc:'Ambos sexos. Hiperfagia y obesidad características.',color:'#e91e8c',
+    wp_M_yr:[3.0,7.5,10.5,13.0,16.5,20.0,24.5,30.0,37.5,45.0,52.0,58.0,62.5,65.0,67.0,69.0,70.0,71.0,72.0],
+    wp_F_yr:[2.8,7.0,9.8,12.5,15.5,19.0,23.5,29.0,36.0,44.0,51.0,57.0,62.0,65.0,67.0,68.0,69.0,70.0,70.0],
+    hp_M_yr:[48,70,79,87,93,99,104,110,114,119,123,128,132,136,138,140,142,143,144],
+    hp_F_yr:[47,68,77,84,90,95,100,104,108,112,116,121,126,129,131,133,134,135,135],
+    note:'Prader-Willi: hiperfagia severa, obesidad, talla baja. Riesgo muy alto de malnutrición por exceso. Vigilar IMC con curvas específicas. Objetivo P/T <P85 OMS.'},
+  achon:{id:'achon',name:'Acondroplasia (Horton 1978)',ref:'Horton WA et al. J Pediatr 1978;93(3):435-8.',desc:'Ambos sexos. Talla baja desproporcionada.',color:'#0891b2',
+    hp_M_yr:[47,65,72,78,82,87,91,95,98,102,105,108,112,116,119,122,124,125,126],
+    hp_F_yr:[46,63,70,76,80,84,88,91,95,98,101,104,107,111,114,116,118,119,120],
+    note:'Acondroplasia: displasia esquelética más frecuente. Talla adulta media 130 cm (♂) y 124 cm (♀). Usar curvas de Horton para seguimiento; OMS subestima talla baja patológica.'},
+  williams:{id:'williams',name:'Síndrome de Williams',ref:'Martin NDT et al. Arch Dis Child 1984;59:339. Stock et al.',desc:'Ambos sexos. Talla baja, cardiopatía asociada.',color:'#7c3aed',
+    hp_M_yr:[46,66,73,79,84,89,93,97,101,104,108,112,116,120,123,125,127,128,129],
+    hp_F_yr:[45,64,71,77,82,86,90,94,97,101,104,108,112,115,118,120,121,122,123],
+    note:'Williams-Beuren: del(7q11.23). Talla adulta ~160 cm (♂) y ~153 cm (♀). Retraso de crecimiento desde 1er año. Frecuente hipercalcemia neonatal e hipersensibilidad al calcio.'},
+};
+
+let curCurve='oms';
+
+function buildCurves(){
+  const g=document.getElementById('curve-cards');
+  g.innerHTML='';
+  Object.values(CURVAS).forEach(c=>{
+    const d=document.createElement('div');
+    d.className='curve-card'+(c.id===curCurve?' on':'');
+    d.innerHTML=`<div class="ct" style="color:${c.color}">${c.name}</div>
+      <div class="cs">${c.desc}</div>
+      <div class="ca">${c.ref}</div>`;
+    d.onclick=()=>{
+      curCurve=c.id;
+      document.querySelectorAll('.curve-card').forEach(x=>x.classList.remove('on'));
+      d.classList.add('on');
+      const gb=document.getElementById('gmfcs-box');
+      gb.style.display=c.id==='pci'?'block':'none';
+      calcA();
+    };
+    g.appendChild(d);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TABLAS LMS OMS 2006 — FUENTE DIRECTA DE PDFs OFICIALES OMS
+// Método: Z = [(X/M)^L - 1] / (L*S)
+// Ajuste OMS para |Z|>3: Z_adj = ±3 ± (X - SD3) / (SD2 - SD3)
+// ═══════════════════════════════════════════════════════════════
+
+// ── WFA BOYS 0–60 meses [mes] → [L, M, S] ──
+const WFA_M = [
+  [0.3487,3.3464,0.14602],[0.2297,4.4709,0.13395],[0.1970,5.5675,0.12385],
+  [0.1738,6.3762,0.11727],[0.1553,7.0023,0.11316],[0.1395,7.5105,0.11080],
+  [0.1257,7.9340,0.10958],[0.1134,8.2970,0.10902],[0.1021,8.6151,0.10882],
+  [0.0917,8.9014,0.10881],[0.0820,9.1649,0.10891],[0.0730,9.4122,0.10906],
+  [0.0644,9.6479,0.10925],[0.0563,9.8749,0.10949],[0.0487,10.0953,0.10976],
+  [0.0413,10.3108,0.11007],[0.0343,10.5228,0.11041],[0.0275,10.7319,0.11079],
+  [0.0211,10.9385,0.11119],[0.0148,11.1430,0.11164],[0.0087,11.3462,0.11211],
+  [0.0029,11.5486,0.11261],[-0.0028,11.7504,0.11314],[-0.0083,11.9514,0.11369],
+  [-0.0137,12.1515,0.11426],[-0.0189,12.3502,0.11485],[-0.0240,12.5466,0.11544],
+  [-0.0289,12.7401,0.11604],[-0.0337,12.9303,0.11664],[-0.0385,13.1169,0.11723],
+  [-0.0431,13.3000,0.11781],[-0.0476,13.4798,0.11839],[-0.0520,13.6567,0.11896],
+  [-0.0564,13.8309,0.11953],[-0.0606,14.0031,0.12008],[-0.0648,14.1736,0.12062],
+  [-0.0689,14.3429,0.12116],[-0.0729,14.5113,0.12168],[-0.0769,14.6791,0.12220],
+  [-0.0808,14.8466,0.12271],[-0.0846,15.0140,0.12322],[-0.0883,15.1813,0.12373],
+  [-0.0920,15.3486,0.12425],[-0.0957,15.5158,0.12478],[-0.0993,15.6828,0.12531],
+  [-0.1028,15.8497,0.12586],[-0.1063,16.0163,0.12643],[-0.1097,16.1827,0.12700],
+  [-0.1131,16.3489,0.12759],[-0.1165,16.5150,0.12819],[-0.1198,16.6811,0.12880],
+  [-0.1230,16.8471,0.12943],[-0.1262,17.0132,0.13005],[-0.1294,17.1792,0.13069],
+  [-0.1325,17.3452,0.13133],[-0.1356,17.5111,0.13197],[-0.1387,17.6768,0.13261],
+  [-0.1417,17.8422,0.13325],[-0.1447,18.0073,0.13389],[-0.1477,18.1722,0.13453],
+  [-0.1506,18.3366,0.13517]
+];
+
+// ── WFA GIRLS 0–60 meses ──
+const WFA_F = [
+  [0.3809,3.2322,0.14171],[0.1714,4.1873,0.13724],[0.0962,5.1282,0.13000],
+  [0.0402,5.8458,0.12619],[-0.0050,6.4237,0.12402],[-0.0430,6.8985,0.12274],
+  [-0.0756,7.2970,0.12204],[-0.1039,7.6422,0.12178],[-0.1288,7.9487,0.12181],
+  [-0.1507,8.2254,0.12199],[-0.1700,8.4800,0.12223],[-0.1872,8.7192,0.12247],
+  [-0.2024,8.9481,0.12268],[-0.2158,9.1699,0.12283],[-0.2278,9.3870,0.12294],
+  [-0.2384,9.6008,0.12299],[-0.2478,9.8124,0.12303],[-0.2562,10.0226,0.12306],
+  [-0.2637,10.2315,0.12309],[-0.2703,10.4393,0.12315],[-0.2762,10.6464,0.12323],
+  [-0.2815,10.8534,0.12335],[-0.2862,11.0608,0.12350],[-0.2903,11.2688,0.12369],
+  [-0.2941,11.4775,0.12390],[-0.2975,11.6864,0.12414],[-0.3005,11.8947,0.12441],
+  [-0.3032,12.1015,0.12472],[-0.3057,12.3059,0.12506],[-0.3080,12.5073,0.12545],
+  [-0.3101,12.7055,0.12587],[-0.3120,12.9006,0.12633],[-0.3138,13.0930,0.12683],
+  [-0.3155,13.2837,0.12737],[-0.3171,13.4731,0.12794],[-0.3186,13.6618,0.12855],
+  [-0.3201,13.8503,0.12919],[-0.3216,14.0385,0.12988],[-0.3230,14.2265,0.13059],
+  [-0.3243,14.4140,0.13135],[-0.3257,14.6010,0.13213],[-0.3270,14.7873,0.13293],
+  [-0.3283,14.9727,0.13376],[-0.3296,15.1573,0.13460],[-0.3309,15.3410,0.13545],
+  [-0.3322,15.5240,0.13630],[-0.3335,15.7064,0.13716],[-0.3348,15.8882,0.13800],
+  [-0.3361,16.0697,0.13884],[-0.3374,16.2511,0.13968],[-0.3387,16.4322,0.14051],
+  [-0.3400,16.6133,0.14132],[-0.3414,16.7942,0.14213],[-0.3427,16.9748,0.14293],
+  [-0.3440,17.1551,0.14371],[-0.3453,17.3347,0.14448],[-0.3466,17.5136,0.14525],
+  [-0.3479,17.6916,0.14600],[-0.3492,17.8686,0.14675],[-0.3505,18.0445,0.14748],
+  [-0.3518,18.2193,0.14821]
+];
+
+// ── LFA BOYS 0–24 meses: Simplified table -3SD,-2SD,-1SD,Median (cm) ──
+// Datos directos de tabla OMS simplificada
+const LFA_M_SFT = [
+  // m: [-3SD,-2SD,-1SD,Median,1SD,2SD,3SD]
+  [44.2,46.1,48.0,49.9,51.8,53.7,55.6], // 0
+  [48.9,50.8,52.8,54.7,56.7,58.6,60.6], // 1
+  [52.4,54.4,56.4,58.4,60.4,62.4,64.4], // 2
+  [55.3,57.3,59.4,61.4,63.5,65.5,67.6], // 3
+  [57.6,59.7,61.8,63.9,66.0,68.0,70.1], // 4
+  [59.6,61.7,63.8,65.9,68.0,70.1,72.2], // 5
+  [61.2,63.3,65.5,67.6,69.8,71.9,74.0], // 6
+  [62.7,64.8,67.0,69.2,71.3,73.5,75.7], // 7
+  [64.0,66.2,68.4,70.6,72.8,75.0,77.2], // 8
+  [65.2,67.5,69.7,72.0,74.2,76.5,78.7], // 9
+  [66.4,68.7,71.0,73.3,75.6,77.9,80.1], // 10
+  [67.6,69.9,72.2,74.5,76.9,79.2,81.5], // 11
+  [68.6,71.0,73.4,75.7,78.1,80.5,82.9], // 12
+  [69.6,72.1,74.5,76.9,79.3,81.8,84.2], // 13
+  [70.6,73.1,75.6,78.0,80.5,83.0,85.5], // 14
+  [71.6,74.1,76.6,79.1,81.7,84.2,86.7], // 15
+  [72.5,75.0,77.6,80.2,82.8,85.4,88.0], // 16
+  [73.3,76.0,78.6,81.2,83.9,86.5,89.2], // 17
+  [74.2,76.9,79.6,82.3,85.0,87.7,90.4], // 18
+  [75.0,77.7,80.5,83.2,86.0,88.8,91.5], // 19
+  [75.8,78.6,81.4,84.2,87.0,89.8,92.6], // 20
+  [76.5,79.4,82.3,85.1,88.0,90.9,93.8], // 21
+  [77.2,80.2,83.1,86.0,89.0,91.9,94.9], // 22
+  [78.0,81.0,83.9,86.9,89.9,92.9,95.9], // 23
+  [78.7,81.7,84.8,87.8,90.9,93.9,97.0], // 24
+];
+
+// ── LFA GIRLS 0–24 meses: M y SD (de tabla LMS del PDF) ──
+// L=1 para todos, SD=M*S
+const LFA_F_LMS = [
+  // [M, S] → mes 0-24
+  [49.1477,0.03790],[53.6872,0.03640],[57.0673,0.03568],[59.8029,0.03520],
+  [62.0899,0.03486],[64.0301,0.03463],[65.7311,0.03448],[67.2873,0.03441],
+  [68.7498,0.03440],[70.1435,0.03444],[71.4818,0.03452],[72.7710,0.03464],
+  [74.0150,0.03479],[75.2176,0.03496],[76.3817,0.03514],[77.5099,0.03534],
+  [78.6055,0.03555],[79.6710,0.03576],[80.7079,0.03598],[81.7182,0.03620],
+  [82.7036,0.03643],[83.6654,0.03666],[84.6040,0.03688],[85.5202,0.03711],
+  [86.4153,0.03734]
+];
+
+// ── WFL BOYS: por cada 0.5cm 45.0–110.0 → [L, M, S] ──
+// L = -0.3521 constante para todos
+// Solo guardamos M y S (L siempre -0.3521)
+const WFL_M_DATA = [
+  // 45.0cm índice 0, paso 0.5cm
+  [2.4410,0.09182],[2.5244,0.09153],[2.6077,0.09124],[2.6913,0.09094],
+  [2.7755,0.09065],[2.8609,0.09036],[2.9480,0.09007],[3.0377,0.08977],
+  [3.1308,0.08948],[3.2276,0.08919],[3.3278,0.08890],[3.4311,0.08861],
+  [3.5376,0.08831],[3.6477,0.08801],[3.7620,0.08771],[3.8814,0.08741],
+  [4.0060,0.08711],[4.1354,0.08681],[4.2693,0.08651],[4.4066,0.08621],
+  [4.5467,0.08592],[4.6892,0.08563],[4.8338,0.08535],[4.9796,0.08507],
+  [5.1259,0.08481],[5.2721,0.08455],[5.4180,0.08430],[5.5632,0.08406],
+  [5.7074,0.08383],[5.8501,0.08362],[5.9907,0.08342],[6.1284,0.08324],
+  [6.2632,0.08308],[6.3954,0.08292],[6.5251,0.08279],[6.6527,0.08266],
+  [6.7786,0.08255],[6.9028,0.08245],[7.0255,0.08236],[7.1467,0.08229],
+  [7.2666,0.08223],[7.3854,0.08218],[7.5034,0.08215],[7.6206,0.08213],
+  [7.7370,0.08212],[7.8526,0.08212],[7.9674,0.08214],[8.0816,0.08216],
+  [8.1955,0.08219],[8.3092,0.08224],[8.4227,0.08229],[8.5358,0.08235],
+  [8.6480,0.08241],[8.7594,0.08248],[8.8697,0.08254],[8.9788,0.08262],
+  [9.0865,0.08269],[9.1927,0.08276],[9.2974,0.08283],[9.4010,0.08289],
+  [9.5032,0.08295],[9.6041,0.08301],[9.7033,0.08307],[9.8007,0.08311],
+  [9.8963,0.08314],[9.9902,0.08317],[10.0827,0.08318],[10.1741,0.08318],
+  [10.2649,0.08316],[10.3558,0.08313],[10.4475,0.08308],[10.5405,0.08301],
+  [10.6352,0.08293],[10.7322,0.08284],[10.8321,0.08273],[10.9350,0.08260],
+  [11.0415,0.08246],[11.1516,0.08231],[11.2651,0.08215],[11.3817,0.08198],
+  [11.5007,0.08181],[11.6218,0.08163],[11.7444,0.08145],[11.8678,0.08128],
+  [11.9916,0.08111],[12.1152,0.08096],[12.2382,0.08082],[12.3603,0.08069],
+  [12.4815,0.08058],[12.6017,0.08048],[12.7209,0.08041],[12.8392,0.08034],
+  [12.9569,0.08030],[13.0742,0.08026],[13.1910,0.08025],[13.3075,0.08025],
+  [13.4239,0.08026],[13.5404,0.08029],[13.6572,0.08034],[13.7745,0.08041],
+  [13.8923,0.08050],[14.0109,0.08060],[14.1305,0.08072],[14.2515,0.08085],
+  [14.3742,0.08099],[14.4990,0.08115],[14.6264,0.08133],[14.7568,0.08152],
+  [14.8906,0.08173],[15.0283,0.08195],[15.1704,0.08219],[15.3174,0.08244],
+  [15.4698,0.08270],[15.6281,0.08297],[15.7927,0.08326],[15.9640,0.08355],
+  [16.1421,0.08386],[16.3270,0.08417],[16.5188,0.08450],[16.7174,0.08483],
+  [16.9226,0.08518],[17.1340,0.08554],[17.3513,0.08590],[17.5741,0.08627],
+  [17.8020,0.08665],[18.0344,0.08703],[18.2706,0.08742],[18.5100,0.08781],
+  [18.7519,0.08820],[19.0023,0.08859] // hasta 110.0cm
+];
+// índice: (cm - 45.0) / 0.5
+
+// ── MUAC BOYS 0–60 meses: [M, SD] de tabla OMS (tab_muac_boys) ──
+// Valores aproximados de tabla MUAC-for-age boys (second set)
+// M en cm, SD aprox de tabla
+const MUAC_M_DATA = [
+  // mes 0-60: [M, SD]
+  [11.20,1.00],[12.00,1.05],[13.00,1.08],[13.80,1.08],[14.30,1.08],
+  [14.60,1.06],[14.80,1.06],[14.90,1.06],[15.00,1.07],[15.10,1.08],
+  [15.10,1.08],[15.20,1.08],[15.20,1.08],[15.30,1.08],[15.30,1.09],
+  [15.40,1.09],[15.40,1.10],[15.40,1.10],[15.50,1.10],[15.50,1.10],
+  [15.50,1.11],[15.60,1.11],[15.60,1.11],[15.60,1.11],[15.70,1.11],
+  [15.60,1.10],[15.60,1.11],[15.70,1.11],[15.70,1.11],[15.70,1.11],
+  [15.80,1.11],[15.80,1.12],[15.80,1.12],[15.90,1.12],[15.90,1.12],
+  [15.90,1.12],[16.00,1.12],[16.00,1.13],[16.00,1.13],[16.10,1.13],
+  [16.10,1.13],[16.10,1.14],[16.20,1.14],[16.20,1.14],[16.20,1.15],
+  [16.30,1.15],[16.30,1.15],[16.30,1.16],[16.40,1.16],[16.40,1.16],
+  [16.40,1.17],[16.50,1.17],[16.50,1.17],[16.50,1.18],[16.60,1.18],
+  [16.60,1.18],[16.60,1.19],[16.70,1.19],[16.70,1.19],[16.70,1.20],
+  [16.80,1.20]
+];
+
+const MUAC_F_DATA = [
+  [10.90,1.00],[11.80,1.04],[12.80,1.07],[13.50,1.07],[14.00,1.07],
+  [14.40,1.06],[14.60,1.06],[14.70,1.06],[14.80,1.06],[14.90,1.07],
+  [15.00,1.07],[15.00,1.07],[15.10,1.07],[15.10,1.08],[15.20,1.08],
+  [15.20,1.08],[15.20,1.08],[15.30,1.09],[15.30,1.09],[15.30,1.09],
+  [15.40,1.09],[15.40,1.10],[15.40,1.10],[15.50,1.10],[15.50,1.10],
+  [15.50,1.10],[15.60,1.11],[15.60,1.11],[15.60,1.11],[15.60,1.11],
+  [15.70,1.11],[15.70,1.12],[15.70,1.12],[15.80,1.12],[15.80,1.12],
+  [15.80,1.13],[15.90,1.13],[15.90,1.13],[15.90,1.14],[16.00,1.14],
+  [16.00,1.14],[16.00,1.15],[16.10,1.15],[16.10,1.15],[16.10,1.15],
+  [16.20,1.16],[16.20,1.16],[16.20,1.16],[16.30,1.17],[16.30,1.17],
+  [16.30,1.17],[16.40,1.18],[16.40,1.18],[16.40,1.18],[16.50,1.19],
+  [16.50,1.19],[16.50,1.19],[16.60,1.20],[16.60,1.20],[16.60,1.20],
+  [16.70,1.21]
+];
+
+// ═══════════════════════════════════
+// FUNCIÓN CENTRAL DE CÁLCULO LMS OMS
+// ═══════════════════════════════════
+function calcZlms(X, L, M, S) {
+  let z;
+  if (Math.abs(L) < 1e-6) {
+    z = Math.log(X / M) / S;
+  } else {
+    z = (Math.pow(X / M, L) - 1) / (L * S);
+  }
+  // Ajuste OMS para valores extremos > |3|
+  if (z < -3) {
+    const SD3 = M * Math.pow(1 + L * S * (-3), 1 / L);
+    const SD2 = M * Math.pow(1 + L * S * (-2), 1 / L);
+    return -3 - (SD3 - X) / (SD2 - SD3);
+  }
+  if (z > 3) {
+    const SD3 = M * Math.pow(1 + L * S * 3, 1 / L);
+    const SD2 = M * Math.pow(1 + L * S * 2, 1 / L);
+    return 3 + (X - SD3) / (SD3 - SD2);
+  }
+  return z;
+}
+
+// WFA: peso/edad
+function zWFA(peso, edadM, sx) {
+  const tbl = sx === 'M' ? WFA_M : WFA_F;
+  const m = Math.floor(edadM);
+  const idx = Math.min(m, tbl.length - 1);
+  // Interpolación lineal entre meses
+  if (m < tbl.length - 1 && edadM !== m) {
+    const frac = edadM - m;
+    const [L0,M0,S0] = tbl[idx];
+    const [L1,M1,S1] = tbl[idx+1];
+    const Li = L0 + frac*(L1-L0);
+    const Mi = M0 + frac*(M1-M0);
+    const Si = S0 + frac*(S1-S0);
+    return calcZlms(peso, Li, Mi, Si);
+  }
+  const [L,M,S] = tbl[idx];
+  return calcZlms(peso, L, M, S);
+}
+
+// LFA boys: talla/edad usando tabla simplificada (interpolación lineal entre SDs)
+function zLFA_M(talla, edadM) {
+  // 0-24 meses: tabla campo OMS
+  if(edadM <= 24){
+    const m = Math.min(Math.floor(edadM), 24);
+    const row = LFA_M_SFT[m];
+    const [s3n,s2n,s1n,med,s1p,s2p,s3p] = row;
+    const SD = med - s1n;
+    if (talla < s3n) return -3 - (s3n - talla) / (s2n - s3n);
+    if (talla > s3p) return 3 + (talla - s3p) / (s3p - s2p);
+    return (talla - med) / SD;
+  }
+  // 24-60 meses: medianas OMS HFA boys (tabla simplificada)
+  // Mes 24-60 medianas y SD aproximados
+  const HFA_M_24_60 = [
+    // [mediana, SD] mes 24-60
+    [87.8,3.2],[88.5,3.2],[89.2,3.3],[89.9,3.3],[90.6,3.4],[91.2,3.4],
+    [91.9,3.4],[92.5,3.5],[93.2,3.5],[93.8,3.5],[94.4,3.6],[95.0,3.6],
+    [95.6,3.6],[96.1,3.7],[96.7,3.7],[97.3,3.7],[97.9,3.8],[98.4,3.8],
+    [99.0,3.8],[99.5,3.9],[100.1,3.9],[100.6,3.9],[101.2,4.0],[101.7,4.0],
+    [102.2,4.0],[102.8,4.1],[103.3,4.1],[103.8,4.1],[104.3,4.2],[104.9,4.2],
+    [105.4,4.2],[105.9,4.3],[106.4,4.3],[106.9,4.3],[107.4,4.4],[107.9,4.4]
+  ];
+  const idx2 = Math.min(Math.floor(edadM)-24, HFA_M_24_60.length-1);
+  const [med2,sd2] = HFA_M_24_60[Math.max(0,idx2)];
+  let z2=(talla-med2)/sd2;
+  if(talla<med2-3*sd2) return -3-(med2-3*sd2-talla)/sd2;
+  if(talla>med2+3*sd2) return 3+(talla-med2-3*sd2)/sd2;
+  return z2;
+}
+
+// LFA girls: L=1, usar LMS + extensión a 60m
+function zLFA_F(talla, edadM) {
+  if(edadM <= 24){
+    const m = Math.min(Math.floor(edadM), 24);
+    const [M, S] = LFA_F_LMS[m];
+    return calcZlms(talla, 1, M, S);
+  }
+  // 24-60 meses niñas OMS HFA
+  const HFA_F_24_60 = [
+    [86.4,3.2],[87.2,3.2],[87.9,3.3],[88.6,3.3],[89.3,3.4],[90.0,3.4],
+    [90.7,3.4],[91.4,3.5],[92.0,3.5],[92.7,3.5],[93.3,3.6],[94.0,3.6],
+    [94.6,3.6],[95.2,3.7],[95.9,3.7],[96.5,3.7],[97.1,3.8],[97.7,3.8],
+    [98.3,3.8],[98.9,3.9],[99.5,3.9],[100.1,3.9],[100.7,4.0],[101.3,4.0],
+    [101.9,4.0],[102.5,4.1],[103.1,4.1],[103.7,4.1],[104.2,4.2],[104.8,4.2],
+    [105.4,4.2],[105.9,4.3],[106.5,4.3],[107.1,4.3],[107.6,4.4],[108.2,4.4]
+  ];
+  const idx2=Math.min(Math.floor(edadM)-24,HFA_F_24_60.length-1);
+  const [med2,sd2]=HFA_F_24_60[Math.max(0,idx2)];
+  if(talla<med2-3*sd2) return -3-(med2-3*sd2-talla)/sd2;
+  if(talla>med2+3*sd2) return 3+(talla-med2-3*sd2)/sd2;
+  return (talla-med2)/sd2;
+}
+
+// WFL girls (L=-0.3833 constante OMS)
+const WFL_F_DATA = [
+  // 45.0cm índice 0, paso 0.5cm, hasta 110cm — [M, S]
+  [2.2780,0.09468],[2.3552,0.09434],[2.4328,0.09400],[2.5115,0.09367],
+  [2.5920,0.09334],[2.6749,0.09300],[2.7608,0.09267],[2.8502,0.09233],
+  [2.9436,0.09200],[3.0413,0.09166],[3.1432,0.09133],[3.2491,0.09099],
+  [3.3590,0.09066],[3.4724,0.09033],[3.5891,0.09000],[3.7094,0.08967],
+  [3.8335,0.08934],[3.9618,0.08902],[4.0943,0.08869],[4.2312,0.08837],
+  [4.3722,0.08805],[4.5173,0.08774],[4.6656,0.08742],[4.8165,0.08711],
+  [4.9690,0.08680],[5.1222,0.08650],[5.2754,0.08620],[5.4284,0.08591],
+  [5.5805,0.08562],[5.7309,0.08534],[5.8790,0.08506],[6.0244,0.08479],
+  [6.1668,0.08453],[6.3056,0.08428],[6.4406,0.08403],[6.5716,0.08379],
+  [6.6986,0.08356],[6.8217,0.08334],[6.9413,0.08313],[7.0577,0.08293],
+  [7.1713,0.08274],[7.2824,0.08256],[7.3915,0.08239],[7.4989,0.08222],
+  [7.6050,0.08207],[7.7101,0.08192],[7.8145,0.08178],[7.9184,0.08165],
+  [8.0220,0.08152],[8.1256,0.08140],[8.2293,0.08129],[8.3332,0.08118],
+  [8.4374,0.08108],[8.5420,0.08098],[8.6470,0.08089],[8.7524,0.08080],
+  [8.8581,0.08071],[8.9642,0.08063],[9.0707,0.08055],[9.1776,0.08048],
+  [9.2849,0.08040],[9.3928,0.08033],[9.5013,0.08026],[9.6104,0.08019],
+  [9.7201,0.08013],[9.8303,0.08006],[9.9410,0.08000],[10.0522,0.07994],
+  [10.1638,0.07988],[10.2757,0.07982],[10.3878,0.07976],[10.5001,0.07970],
+  [10.6124,0.07964],[10.7248,0.07958],[10.8373,0.07952],[10.9501,0.07946],
+  [11.0633,0.07940],[11.1769,0.07934],[11.2910,0.07928],[11.4057,0.07922],
+  [11.5208,0.07916],[11.6363,0.07910],[11.7522,0.07904],[11.8685,0.07898],
+  [11.9853,0.07893],[12.1026,0.07887],[12.2204,0.07881],[12.3386,0.07876],
+  [12.4573,0.07871],[12.5764,0.07866],[12.6959,0.07861],[12.8158,0.07856],
+  [12.9361,0.07851],[13.0567,0.07847],[13.1777,0.07843],[13.2991,0.07839],
+  [13.4209,0.07835],[13.5430,0.07832],[13.6656,0.07829],[13.7886,0.07826],
+  [13.9120,0.07824],[14.0359,0.07821],[14.1603,0.07819],[14.2852,0.07818],
+  [14.4107,0.07817],[14.5367,0.07816],[14.6633,0.07816],[14.7905,0.07816],
+  [14.9183,0.07817],[15.0467,0.07819],[15.1759,0.07821],[15.3057,0.07823],
+  [15.4362,0.07826],[15.5673,0.07830],[15.6991,0.07835],[15.8317,0.07840],
+  [15.9649,0.07846],[16.0987,0.07853],[16.2332,0.07861],[16.3683,0.07870],
+  [16.5040,0.07879],[16.6403,0.07890],[16.7774,0.07901],[16.9151,0.07913],
+  [17.0534,0.07926],[17.1923,0.07940],[17.3319,0.07955],[17.4721,0.07971],
+  [17.6129,0.07987],[17.7544,0.08005],[17.8964,0.08023],[18.0390,0.08042],
+  [18.1823,0.08062],[18.3262,0.08082],[18.4707,0.08104],[18.6157,0.08126],
+  [18.7613,0.08149],[18.9074,0.08173]
+];
+
+function zWFL_F(peso, talla) {
+  const idx = Math.round((talla - 45.0) / 0.5);
+  if (idx < 0 || idx >= WFL_F_DATA.length) return null;
+  const t0 = 45.0 + idx * 0.5;
+  const [M0,S0] = WFL_F_DATA[idx];
+  const L = -0.3833;
+  if (idx < WFL_F_DATA.length-1 && talla !== t0) {
+    const frac = (talla - t0) / 0.5;
+    const [M1,S1] = WFL_F_DATA[idx+1];
+    return calcZlms(peso, L, M0+frac*(M1-M0), S0+frac*(S1-S0));
+  }
+  return calcZlms(peso, L, M0, S0);
+}
+
+// WFL boys: peso/talla (índice por 0.5cm desde 45.0)
+function zWFL_M(peso, talla) {
+  const idx = Math.round((talla - 45.0) / 0.5);
+  if (idx < 0 || idx >= WFL_M_DATA.length) return null;
+  // Interpolación por talla exacta
+  const t0 = 45.0 + idx * 0.5;
+  const [M0,S0] = WFL_M_DATA[idx];
+  const L = -0.3521;
+  if (idx < WFL_M_DATA.length-1 && talla !== t0) {
+    const frac = (talla - t0) / 0.5;
+    const [M1,S1] = WFL_M_DATA[idx+1];
+    const Mi = M0 + frac*(M1-M0);
+    const Si = S0 + frac*(S1-S0);
+    return calcZlms(peso, L, Mi, Si);
+  }
+  return calcZlms(peso, L, M0, S0);
+}
+
+// MUAC/edad
+function zMUAC(pb, edadM, sx) {
+  const tbl = sx === 'M' ? MUAC_M_DATA : MUAC_F_DATA;
+  const idx = Math.min(Math.floor(edadM), tbl.length-1);
+  const [M, SD] = tbl[idx];
+  let z = (pb - M) / SD;
+  // Ajuste lineal extremos
+  if (z < -3) return -3 - (M - 3*SD - pb) / SD;
+  if (z > 3)  return 3  + (pb - (M + 3*SD)) / SD;
+  return z;
+}
+
+
+/* ═══════════════════ PACIENTE GLOBAL ═══════════════════ */
+let G = {
+  edadM: 0, edadCM: 0, tieneCorr: false,
+  peso: 0, talla: 0, sexo: '', nombre: '', dx: ''
+};
+
+function calcEdad(){
+  const fn  = document.getElementById('fn').value;
+  const fev = document.getElementById('fev').value;
+  const f40 = document.getElementById('f40').value;
+  const disp = document.getElementById('edad-display');
+  const corrCard = document.getElementById('disp-corr-card');
+  const ecNota = document.getElementById('ec-nota');
+
+  if(!fn || !fev){ disp.style.display='none'; G.edadM=0; syncGP(); return; }
+
+  const dNac = new Date(fn+'T12:00:00');
+  const dEval = new Date(fev+'T12:00:00');
+  if(dEval < dNac){ disp.style.display='none'; return; }
+
+  let anios = dEval.getFullYear() - dNac.getFullYear();
+  let meses = dEval.getMonth() - dNac.getMonth();
+  let dias  = dEval.getDate()  - dNac.getDate();
+  if(dias < 0) meses--;
+  if(meses < 0){ anios--; meses += 12; }
+  const totalMeses = anios * 12 + meses;
+
+  G.edadM = totalMeses;
+  document.getElementById('disp-ec').textContent =
+    anios > 0 ? anios+'a '+meses+'m' : totalMeses+' meses';
+  document.getElementById('disp-m').textContent = totalMeses+' meses';
+
+  if(f40){
+    const d40 = new Date(f40+'T12:00:00');
+    const msCorr = dEval - d40;
+    if(msCorr >= 0){
+      const mCorr = Math.floor(msCorr / (30.4375*86400000));
+      const aCy = Math.floor(mCorr/12), aCm = mCorr%12;
+      G.edadCM = mCorr; G.tieneCorr = true;
+      document.getElementById('disp-corr').textContent =
+        aCy > 0 ? aCy+'a '+aCm+'m' : mCorr+' meses';
+      corrCard.style.display = 'block';
+      const semPrem = Math.round((d40 - dNac) / (7*86400000));
+      ecNota.style.display = 'block';
+      ecNota.innerHTML = '<strong>🔵 Prematuro:</strong> ~'+semPrem+' sem de prematuridad · Edad corregida: <strong>'+mCorr+' meses</strong> · Usar edad corregida para z-scores hasta los 2 años (40 sem EPC)';
+    } else {
+      G.tieneCorr = false; G.edadCM = totalMeses;
+      corrCard.style.display='none'; ecNota.style.display='none';
+    }
+  } else {
+    G.tieneCorr = false; G.edadCM = totalMeses;
+    corrCard.style.display='none'; ecNota.style.display='none';
+  }
+
+  disp.style.display = 'block';
+  syncGP();
+}
+
+function syncGP(){
+  G.peso   = parseFloat(document.getElementById('peso').value)   || 0;
+  G.talla  = parseFloat(document.getElementById('talla').value)  || 0;
+  G.sexo   = document.getElementById('sexo').value;
+  G.nombre = document.getElementById('nombre').value || '';
+  G.dx     = document.getElementById('dx').value     || '';
+
+  // If no dates, edadM stays 0
+  const fn = document.getElementById('fn').value;
+  const fev= document.getElementById('fev').value;
+  if(!fn||!fev) G.edadM = 0;
+
+  // Update summary title
+  const parts = [];
+  if(G.nombre) parts.push(G.nombre);
+  if(G.sexo) parts.push(G.sexo==='M'?'♂':'♀');
+  if(G.edadM > 0){
+    const a=Math.floor(G.edadM/12), m=G.edadM%12;
+    parts.push(a>0? a+'a '+m+'m' : G.edadM+'m');
+  }
+  if(G.peso)  parts.push(G.peso+'kg');
+  if(G.talla) parts.push(G.talla+'cm');
+  document.getElementById('gp-title').textContent =
+    parts.length ? parts.join(' · ') : 'Datos del Paciente — completa para calcular automáticamente';
+
+  // Auto-set formula edad group
+  const edM = G.tieneCorr ? G.edadCM : G.edadM;
+  const fsel = document.getElementById('f-edad');
+  if(fsel && edM > 0){
+    if(edM < 1)         fsel.value = 'pre';
+    else if(edM <= 6)   fsel.value = '0-6m';
+    else if(edM <= 12)  fsel.value = '6-12m';
+    else if(edM <= 36)  fsel.value = '1-3a';
+    else if(edM <= 72)  fsel.value = '4-6a';
+    else if(edM <= 120) fsel.value = '7-10a';
+    else if(edM <= 168) fsel.value = '11-14a';
+    else                fsel.value = '>14a';
+  }
+
+  // Sync hidden formula fields
+  const fpEl = document.getElementById('f-peso');
+  if(fpEl) fpEl.value = G.peso||'';
+
+  calcA(); calcE(); calcF();
+}
+
+function syncAge(){ syncGP(); } // backward compat
+
+function zLabel(z){
+  if(z<-3) return {l:'Desnutrición severa (Z<-3)',c:'d'};
+  if(z<-2) return {l:'Desnutrición moderada (Z<-2)',c:'d'};
+  if(z<-1) return {l:'Riesgo nutricional (Z<-1)',c:'w'};
+  if(z>3)  return {l:'Obesidad (Z>+3)',c:'d'};
+  if(z>2)  return {l:'Sobrepeso (Z>+2)',c:'w'};
+  return {l:'Normal',c:'n'};
+}
+
+function zToPerc(z){
+  const t=Math.abs(z); let p=0.5*(1+erf(t/1.4142135));
+  return z<0?(1-p)*100:p*100;
+}
+function erf(x){
+  const a=[0.254829592,-0.284496736,1.421413741,-1.453152027,1.061405429];
+  const p2=0.3275911; const t=1/(1+p2*Math.abs(x));
+  let y=1-(((((a[4]*t+a[3])*t)+a[2])*t+a[1])*t+a[0])*t*Math.exp(-x*x);
+  return x<0?-y:y;
+}
+
+function calcA(){
+  const peso  = G.peso   || parseFloat(document.getElementById('peso').value)  || 0;
+  const talla = G.talla  || parseFloat(document.getElementById('talla').value) || 0;
+  const edadM = G.tieneCorr ? G.edadCM : G.edadM;
+  const edadA = edadM / 12;
+  const sx    = G.sexo   || document.getElementById('sexo').value;
+  const pc=parseFloat(document.getElementById('pc').value)||0;
+  const pb=parseFloat(document.getElementById('pb').value)||0;
+  const pt=parseFloat(document.getElementById('pt').value)||0;
+  const tdiana=parseFloat(document.getElementById('tdiana').value)||0;
+  const curve=CURVAS[curCurve];
+
+  // ── IMC, AMB, grasa ──
+  const imc=talla>0&&peso>0?peso/((talla/100)**2):0;
+  document.getElementById('r-imc').textContent=imc>0?imc.toFixed(1):'—';
+
+  let ambc='—';
+  if(pb>0&&pt>0){const cma=pb-Math.PI*(pt/10);ambc=(cma*cma/(4*Math.PI)).toFixed(1);}
+  document.getElementById('r-ambc').textContent=ambc;
+
+  let gbc='—';
+  if(pt>0&&pb>0){
+    const sum=parseFloat(pt)||0;
+    if(sx==='M') gbc=Math.max(0,(1.21*(sum+pb)-0.008*(sum+pb)**2-1.7)).toFixed(1)+'%';
+    else if(sx==='F') gbc=Math.max(0,(1.33*(sum+pb)-0.013*(sum+pb)**2-2.5)).toFixed(1)+'%';
+  }
+  document.getElementById('r-gbc').textContent=gbc;
+
+  // ── Z-scores OMS con tablas LMS exactas ──
+  let zGenHtml='';
+  if(peso>0&&sx){
+    if(edadM>0&&edadM<=60){
+      // P/E — WFA LMS exacto
+      const zPE = zWFA(peso, edadM, sx);
+      const zwl = zLabel(zPE);
+      zGenHtml += zCard('Peso/Edad (WFA-LMS OMS)',zPE,zwl,zToPerc(zPE),'var(--az)');
+    }
+    if(talla>0&&edadM>0&&edadM<=24){
+      // T/E — LFA 0-24m
+      const zTE = sx==='M' ? zLFA_M(talla,edadM) : zLFA_F(talla,edadM);
+      const zhl = zLabel(zTE);
+      zGenHtml += zCard('Talla/Edad (LFA-LMS OMS)',zTE,zhl,zToPerc(zTE),'var(--az)');
+    }
+    if(talla>0&&peso>0&&talla>=45&&talla<=110){
+      // P/T — WFL LMS exacto según sexo
+      const zPT = sx==='F' ? zWFL_F(peso,talla) : zWFL_M(peso,talla);
+      if(zPT !== null){
+        const zptl = zLabel(zPT);
+        zGenHtml += zCard('⭐ Peso/Talla (WFL-LMS OMS)',zPT,zptl,zToPerc(zPT),'var(--ro)');
+      }
+    }
+    if(pb>0&&edadM>0&&edadM<=60){
+      // MUAC
+      const zMU = zMUAC(pb,edadM,sx);
+      const zmul = zLabel(zMU);
+      zGenHtml += zCard('MUAC/Edad (PB)',zMU,zmul,zToPerc(zMU),'var(--mo)');
+    }
+  }
+  document.getElementById('zscores-gen').innerHTML=zGenHtml?
+    `<div class="sub" style="margin-top:0">Z-scores OMS 2006 — Método LMS exacto (WHO Anthro)</div><div class="g4">${zGenHtml}</div>`:'';
+
+  // ── % Peso/Talla Waterlow ──
+  if(peso>0&&talla>0&&talla>=45&&talla<=110&&sx){
+    // Usar mediana de WFL para la talla
+    const idx = Math.round((talla-45.0)/0.5);
+    const [M_wfl] = WFL_M_DATA[Math.min(idx, WFL_M_DATA.length-1)];
+    const pptN = (peso/M_wfl)*100;
+    document.getElementById('r-ppt').textContent=pptN.toFixed(1)+'%';
+  } else if(peso>0&&edadM>0&&sx&&edadM<=60){
+    // Fallback: usar mediana P/E
+    const [L,M,S] = (sx==='M'?WFA_M:WFA_F)[Math.min(Math.floor(edadM),60)];
+    document.getElementById('r-ppt').textContent=((peso/M)*100).toFixed(1)+'%';
+  } else document.getElementById('r-ppt').textContent='—';
+
+  // ── Z-scores curva especial ──
+  let espHtml='';
+  const espEl=document.getElementById('zscores-esp');
+
+  if(!peso&&!talla){espEl.className='av info';espEl.textContent='Ingresa peso y/o talla del paciente para obtener la valoración.';espEl.style.display='block';return;}
+
+  if(curCurve==='oms'){
+    espEl.style.display='none';
+  } else {
+    espEl.style.display='block';
+    espEl.className='av mo';
+    let espNota=`<strong>📌 ${curve.name}</strong><br><em>${curve.note||''}</em>`;
+    let espCards='';
+
+    function interpCurve(arr,edadA){
+      const i0=Math.min(Math.floor(edadA),arr.length-2);
+      const i1=Math.min(i0+1,arr.length-1);
+      return arr[i0]+(edadA-Math.floor(edadA))*(arr[i1]-arr[i0]);
+    }
+    function espCard(titulo,z,lbl,pct,mediana,valorActual,unidad){
+      const col=lbl.c==='n'?'var(--ve)':lbl.c==='w'?'var(--am)':'var(--ro)';
+      const bg=lbl.c==='d'?'var(--roc)':lbl.c==='w'?'var(--amc)':'var(--vec)';
+      const pctBar=Math.min(Math.max(pct,1),99);
+      const cls=lbl.c==='n'?'ok':lbl.c==='w'?'w':'hi';
+      return `<div class="mc" style="border:2px solid ${col};background:${bg}">
+        <div style="font-size:10px;font-weight:600;color:var(--txs);margin-bottom:3px">${titulo}</div>
+        <div style="font-size:18px;font-weight:800;color:${col}">Z = ${z.toFixed(2)}</div>
+        <div style="font-size:13px;font-weight:700;color:${col}">P${Math.round(pct)}</div>
+        <div class="pb"><div class="pf ${cls}" style="width:${pctBar}%"></div></div>
+        <div style="font-size:10px;color:var(--txs);margin-top:3px">${lbl.l}</div>
+        <div style="font-size:10px;color:var(--txs)">Ref: ${mediana.toFixed(1)}${unidad} | Actual: ${valorActual}${unidad}</div>
+      </div>`;
+    }
+
+    if(curCurve==='down'&&sx&&edadA>=0&&edadA<=18){
+      const arrW=sx==='M'?(curve.wp_M_yr||[]):(curve.wp_F_yr||[]);
+      const arrH=sx==='M'?(curve.hp_M_yr||[]):(curve.hp_F_yr||[]);
+      const medW=interpCurve(arrW,edadA);const medH=interpCurve(arrH,edadA);
+      if(peso>0&&medW){const zw=(peso-medW)/(medW*0.15);espCards+=espCard('Peso/Edad (Zemel Down 2015)',zw,zLabel(zw),zToPerc(zw),medW,peso,'kg');}
+      if(talla>0&&medH){const zh=(talla-medH)/2.8;espCards+=espCard('Talla/Edad (Zemel Down 2015)',zh,zLabel(zh),zToPerc(zh),medH,talla,'cm');}
+    }
+    else if(curCurve==='pci'&&sx){
+      const gmfcs=parseInt(document.getElementById('gmfcs').value)||3;
+      const yi=Math.max(0,Math.min(Math.floor(edadA)-2,17));
+      const tbl=sx==='M'?curve.gmfcs_M:curve.gmfcs_F;
+      const medW=(tbl[gmfcs]||tbl[3])[yi];
+      if(peso>0&&medW>0){const zw=(peso-medW)/(medW*0.15);const pct=zToPerc(zw);
+        espCards+=espCard(`Peso/Edad Brooks GMFCS ${gmfcs}`,zw,zLabel(zw),pct,medW,peso,'kg');
+        if(pct<20&&gmfcs>=3) espNota+='<br>⚠️ Peso bajo P20: umbral riesgo GMFCS III-V.';
+        if(pct<5&&gmfcs<=2) espNota+='<br>⚠️ Peso bajo P5: umbral riesgo GMFCS I-II.';
+      }
+    }
+    else if(curCurve==='turner'&&edadA>=0){
+      const medH=interpCurve(curve.hp_yr||[],Math.max(0,edadA-1));
+      const medW=interpCurve(curve.wp_yr||[],Math.max(0,edadA-1));
+      if(talla>0&&medH){const zh=(talla-medH)/3;espCards+=espCard('Talla/Edad (Turner-Lyon)',zh,zLabel(zh),zToPerc(zh),medH,talla,'cm');}
+      if(peso>0&&medW){const zw=(peso-medW)/(medW*0.15);espCards+=espCard('Peso/Edad (Turner)',zw,zLabel(zw),zToPerc(zw),medW,peso,'kg');}
+    }
+    else if(curCurve==='klinefelter'&&edadA>=0){
+      const medH=interpCurve(curve.hp_yr||[],edadA);
+      const medW=interpCurve(curve.wp_yr||[],edadA);
+      if(talla>0&&medH){const zh=(talla-medH)/3;espCards+=espCard('Talla/Edad (Klinefelter-Davis 2025)',zh,zLabel(zh),zToPerc(zh),medH,talla,'cm');}
+      if(peso>0&&medW){const zw=(peso-medW)/(medW*0.14);espCards+=espCard('Peso/Edad (Klinefelter-Davis 2025)',zw,zLabel(zw),zToPerc(zw),medW,peso,'kg');}
+    }
+    else if((curCurve==='prader'||curCurve==='achon'||curCurve==='williams')&&sx&&edadA>=0){
+      let medH,medW;
+      if(curCurve==='achon'){medH=interpCurve(sx==='M'?(curve.hp_M_yr||[]):(curve.hp_F_yr||[]),edadA);medW=null;}
+      else if(curCurve==='prader'){
+        medH=interpCurve(sx==='M'?(curve.hp_M_yr||[]):(curve.hp_F_yr||[]),edadA);
+        medW=interpCurve(sx==='M'?(curve.wp_M_yr||[]):(curve.wp_F_yr||[]),edadA);
+      } else {medH=interpCurve(sx==='M'?(curve.hp_M_yr||[]):(curve.hp_F_yr||[]),edadA);}
+      if(talla>0&&medH){const zh=(talla-medH)/3;espCards+=espCard(`Talla/Edad (${curve.name})`,zh,zLabel(zh),zToPerc(zh),medH,talla,'cm');}
+      if(peso>0&&medW){const zw=(peso-medW)/(medW*0.15);espCards+=espCard(`Peso/Edad (${curve.name})`,zw,zLabel(zw),zToPerc(zw),medW,peso,'kg');}
+    }
+    espEl.innerHTML=espNota+(espCards?`<div class="g3" style="margin-top:10px">${espCards}</div>`:'');
+    espEl.innerHTML=content;
+  }
+
+  // ── Clasificación ──
+  let clas='<div class="g3">';
+  if(peso>0&&talla>0&&talla>=45&&talla<=110&&sx){
+    // Waterlow P/T usando mediana WFL
+    const idxW = Math.min(Math.round((talla-45.0)/0.5), WFL_M_DATA.length-1);
+    const [M_wfl] = WFL_M_DATA[idxW];
+    const pptN = (peso/M_wfl)*100;
+    const est=pptN>=90?'Normal':pptN>=75?'Desnutrición leve':pptN>=60?'Desnutrición moderada':'Desnutrición severa';
+    const col=pptN>=90?'var(--ve)':pptN>=75?'var(--am)':pptN>=60?'var(--na)':'var(--ro)';
+    clas+=`<div class="mc"><div class="l">Clasificación Waterlow (P/T)</div><div class="v" style="color:${col};font-size:16px">${est}</div><div class="l">${pptN.toFixed(1)}% del peso esperado para la talla</div></div>`;
+  }
+  if(talla>0&&edadM>0&&sx&&edadM<=24){
+    // Talla/Edad con LMS
+    const zTE2 = sx==='M' ? zLFA_M(talla,edadM) : zLFA_F(talla,edadM);
+    const tallaEst = zTE2>=-2 ? 'Talla adecuada' : zTE2>=-3 ? 'Talla baja' : 'Talla baja severa';
+    clas+=`<div class="mc"><div class="l">Estado de talla (T/E)</div><div class="v" style="color:${zTE2>=-2?'var(--ve)':'var(--ro)'};font-size:16px">${tallaEst}</div><div class="l">Z talla/edad: ${zTE2.toFixed(2)}</div></div>`;
+  }
+  if(imc>0){
+    const imcClass=imc<12?'Bajo peso severo':imc<14?'Bajo peso':imc<17?'Normal bajo':imc<19?'Normal':imc<22?'Sobrepeso':'Obesidad';
+    const imcCol=imc<14?'var(--ro)':imc<17?'var(--na)':imc<22?'var(--ve)':'var(--am)';
+    clas+=`<div class="mc"><div class="l">IMC clasificación</div><div class="v" style="color:${imcCol};font-size:15px">${imcClass}</div><div class="l">IMC: ${imc.toFixed(1)} kg/m²</div></div>`;
+  }
+  clas+='</div>';
+  document.getElementById('clasificacion').innerHTML=clas||'<p style="color:var(--txs);font-size:13px">Completa datos antropométricos para la clasificación.</p>';
+
+  // ── Talla diana ──
+  const db=document.getElementById('diana-box');
+  if(tdiana>0&&talla>0){
+    db.style.display='block';
+    const diff=talla-tdiana;
+    db.innerHTML=`<div class="av ${Math.abs(diff)<10?'ok':'warn'}"><strong>Talla diana parental:</strong> ${tdiana} cm — Talla actual: ${talla} cm — Diferencia: ${diff>0?'+':''}${diff.toFixed(1)} cm ${Math.abs(diff)<10?'(dentro de rango esperado)':'(fuera del rango esperado para la familia)'}</div>`;
+  } else db.style.display='none';
+}
+
+function zCard(titulo,z,zl,pct,color){
+  const pctBar=Math.min(Math.max(pct,2),98);
+  const cls=zl.c==='n'?'ok':zl.c==='w'?'w':'hi';
+  return `<div class="mc">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <span style="font-size:11px;font-weight:600;color:var(--txs)">${titulo}</span>
+      <span class="zb ${zl.c}">${z.toFixed(2)}</span>
+    </div>
+    <div style="font-size:20px;font-weight:700;color:${color}">P${Math.round(pct)}</div>
+    <div class="pb"><div class="pf ${cls}" style="width:${pctBar}%"></div></div>
+    <div style="font-size:11px;color:var(--txs);margin-top:4px">${zl.l}</div>
+  </div>`;
+}
+
+buildCurves();
+
+/* ═══════════════════ ENERGÍA ═══════════════════ */
+// ═══════════════════════════════════════════════════════════════
+// FACTORES DE CONDICIÓN ESPECIAL — Referencias:
+// ASPEN Pediatric Critical Care Guidelines (Mehta 2017, Nutr Clin Pract)
+// ESPGHAN/ESPEN Pediatric Parenteral Nutrition: Energy (Joosten 2018, Clin Nutr)
+// ESPEN-ESPGHAN-ECFS Cystic Fibrosis Guidelines (2016)
+// Veldscholte et al. Energy expenditure critically ill children (Pediatr Med 2020)
+// Jotterand-Chaparro et al. Scoping review energy PICU (Nutr Clin Pract 2023)
+// Samour & King, Pediatric Nutrition in Clinical Care, 5th ed. 2022
+// fe = factor estrés (sobre GER), prot = g proteína/kg/día recomendado
+// Para fiebre: +7-13% GER por cada °C >37 (ASPEN/Talbot)
+// ═══════════════════════════════════════════════════════════════
+const COND_INFO={
+  // ── NEUROLÓGICAS ──
+  pci:{
+    notas:{
+      1:'PCI GMFCS I: Similar a niño sano. GET normal, FA 1.1–1.2. Vigilar ingesta calórica. Meta P/T ≥P25.',
+      2:'PCI GMFCS II: GET reducido 10–15%. FA 1.1. Espasticidad leve aumenta GER. Meta P/T ≥P15.',
+      3:'PCI GMFCS III: GET reducido 20–25%. FA 1.0. Riesgo desnutrición frecuente. Considerar SNG. Meta P/T ≥P10.',
+      4:'PCI GMFCS IV: GET reducido 25–35%. FA 0.9. Muy bajo gasto motor. Evaluar gastrostomía. Meta P/T ≥P10.',
+      5:'PCI GMFCS V: GET reducido 30–40%. FA 0.8. Hipotonía severa, sin movilidad. Fórmula especializada. P20 Brooks = umbral mínimo.',
+    },
+    factores:{1:1.1,2:1.05,3:0.95,4:0.88,5:0.78},
+    prot:1.5,
+    ref:'Kuperminc & Stevenson, Dev Disabil Res Rev 2008; Brooks et al. Pediatrics 2011'
+  },
+  neuro_leve:{nota:'Daño neurológico leve (epilepsia controlada, retraso del desarrollo leve): GER similar a niño sano o levemente aumentado. Factor actividad reducido si inmovilidad. Prot 1.2–1.5 g/kg/día. Atención a textura/disfagia.',fe:1.0,fa_override:1.1,prot:1.3,ref:'Romano et al. ESPGHAN Neurological Impairment 2017'},
+  neuro:{nota:'Daño cerebral moderado-severo / encefalopatía: GER puede aumentar 30–50% (espasticidad, convulsiones) o disminuir (sedación, hipotomía). Factor variable. Recomendación: medir por calorimetría indirecta cuando sea posible. Prot 1.2–2.0 g/kg/día.',fe:1.15,prot:1.5,ref:'ESPGHAN Neurological Impairment Guidelines 2017'},
+  tcg:{nota:'Trauma craneoencefálico grave: fase hiper-aguda (24–48h): restricción a 70–80% GER. Fase subaguda: 100–130% GER. Fase rehabilitación: 100–120% + actividad. Prot 1.5–2.5 g/kg/día. Glicemia estricta. ASPEN recomienda inicio enteral <24-48h.',fe:1.3,prot:2.0,ref:'ASPEN Pediatric Critical Care 2017; Mehta et al. NCP 2017'},
+  emm:{nota:'Enfermedad muscular / miopatía: GER reducido por menor masa muscular activa. FA 0.8–1.0. Prot 1.5–2.0 g/kg/día (soporte muscular). Vigilar IMC — riesgo sobrepeso por hipomotilidad.',fe:0.90,prot:1.8,ref:'Pedersen & Febbraio 2012; guías musculares específicas'},
+
+  // ── CARDIOVASCULAR ──
+  cardio:{nota:'Cardiopatía congénita compensada: GET aumentado 120–130%. Dificultad alimentaria, malabsorción, taquicardia. Prot 1.5–2.5 g/kg/día. Restricción de volumen frecuente → fórmula concentrada (1.5 kcal/mL). Suplementar hierro si cianótica.',fe:1.25,prot:2.0,ref:'Medoff-Cooper & Irving 2009; Veldscholte 2020'},
+  cardio_cir:{nota:'Postoperatorio cirugía cardíaca: fase aguda 50–80% GER (primeras 24–48h). Luego progresar a 100–150% GER. Requerimientos hasta 2–3× REE en recuperación. Prot 2.0–3.0 g/kg/día. Meta: 120–150 kcal/kg/día al alta.',fe:1.4,prot:2.5,ref:'Nicholson et al. Pediatr Cardiol 2013; Veldscholte 2020'},
+  cardio_hemo:{nota:'Cardiopatía con repercusión hemodinámica / ICC / hipertensión pulmonar: mayor gasto energético por trabajo respiratorio aumentado y activación adrenérgica. Meta 130–150 kcal/kg/día. Fórmula densa (1.5 kcal/mL) para restricción hídrica. Prot 2.0–3.0 g/kg/día.',fe:1.35,prot:2.5,ref:'Mehta 2017; Veldscholte 2020; guías ICC pediátrica'},
+  trasplante_c:{nota:'Post-trasplante cardíaco: fase aguda: 100–110% GER. Fase crónica: según crecimiento. Prot 2.0–2.5 g/kg/día (inmunosupresores catabolizan proteínas). Vigilar interacciones fármaco-nutriente (tacrolimus, ciclosporina). Restricción K+ y Mg+ si disfunción renal.',fe:1.1,prot:2.2,ref:'ASPEN Transplant Guidelines 2019'},
+
+  // ── RESPIRATORIO ──
+  cf:{nota:'Fibrosis Quística: GET 120–150% de lo normal (infecciones recurrentes, trabajo respiratorio aumentado). Prot 2.0–3.0 g/kg/día. Sin restricción de grasa. Enzimas pancreáticas si insuficiencia exocrina. Vitaminas liposolubles (A, D, E, K). Meta IMC ≥P50.',fe:1.35,prot:2.5,ref:'ESPEN-ESPGHAN-ECFS CF Guidelines 2016'},
+  dpc:{nota:'Displasia broncopulmonar (DBP): alta demanda calórica (120–150 kcal/kg/día) por trabajo respiratorio crónico. Restricción hídrica frecuente → fórmula concentrada. Prot 3.0–4.0 g/kg/día (prematuro). Diuréticos pueden depletar electrolitos.',fe:1.3,prot:3.2,ref:'ASPEN BPD Guidelines; ESPGHAN 2021 preterm'},
+  vm:{nota:'Ventilación mecánica prolongada: en fase aguda 70–80% GER (sedación reduce actividad). Progresar a 100% GER en fase estable. EVITAR sobrealimentación → hipercapnia por exceso de CHO. Prot 1.5–2.5 g/kg/día. Calorimetría indirecta ideal.',fe:1.1,prot:2.0,ref:'Veldscholte 2020; Jotterand-Chaparro 2023'},
+  resp_cronica:{nota:'Enfermedad respiratoria crónica (asma severa, BPD, otras): GER aumentado 110–130%. Trabajo respiratorio elevado. Prot 1.5–2.0 g/kg/día. Atención a estado de vitamina D.',fe:1.2,prot:1.8,ref:'Guías respiratorias pediátricas'},
+
+  // ── DIGESTIVO / HEPÁTICO ──
+  eii:{nota:'EII en brote activo (Crohn/CU): GET ×1.2–1.3. Prot 1.5–2.5 g/kg/día. Nutrición enteral exclusiva preferida en Crohn pediátrico (remisión en 80%). Déficits frecuentes: Fe, Zn, B12, vit D, folato. En remisión: requerimientos normales.',fe:1.2,prot:2.0,ref:'ESPGHAN IBD Guidelines 2018; Ruemmele 2014'},
+  sbc:{nota:'Síndrome de intestino corto / malabsorción severa: GET 130–150% (intestino residual hipermetabólico). Prot 2.0–3.0 g/kg/día. Vitaminas liposolubles. Vigilar B12, Zn, Mg, selenio. Adaptación intestinal progresiva. NP + NE combinada frecuente.',fe:1.4,prot:2.5,ref:'ASPEN Intestinal Failure Guidelines 2020'},
+  hepato:{nota:'Hepatopatía crónica / cirrosis: GET 130–150% (catabolismo, síntesis proteica alterada). Prot 1.5–2.0 g/kg/día (evitar restricción proteica). Vitaminas liposolubles. Encefalopatía: no restringir proteínas en pediatría. Suplementar Zn.',fe:1.3,prot:1.8,ref:'ESPGHAN Liver Disease Guidelines; Bavdekar 2012'},
+  trasplante_h:{nota:'Post-trasplante hepático: fase inmediata: 100–120% GER. Prot 2.0–3.0 g/kg/día (catabolismo post-quirúrgico + corticoides). Inicio enteral precoz (<24h) vía yeyunal si tolera. Fase crónica: según crecimiento.',fe:1.2,prot:2.5,ref:'ASPEN Transplant Guidelines; Mouzaki 2014'},
+  pancreatitis:{nota:'Pancreatitis aguda: inicio enteral precoz vía nasoyeyunal si tolera (dentro de 24–48h). GET 120–130% si hipermetabólica. Prot 1.5–2.0 g/kg/día. NP solo si enteral no tolerable >5 días. Monitorizar triglicéridos si lípidos IV.',fe:1.25,prot:1.8,ref:'ESPGHAN Pancreatitis Guidelines 2018'},
+  fistula:{nota:'Fístula entero-cutánea de alto gasto (>500 mL/día): pérdidas masivas de proteínas, electrolitos y micronutrientes. Prot 2.0–3.0 g/kg/día. Reponer sodio, potasio, magnesio, zinc. NP total si gasto muy alto. GET 130–150%.',fe:1.4,prot:2.5,ref:'ASPEN Fistula Guidelines; Singer 2019'},
+
+  // ── RENAL ──
+  renal_cr:{nota:'ERC estadios 3-5 (sin diálisis): GET similar a normal (o levemente reducido por inactividad). Prot 1.0–1.5 g/kg/día (restricción moderada para reducir uremia). Restricción K, P, Na según estadio. Suplementar vitaminas hidrosolubles, vit D activa.',fe:1.0,prot:1.2,ref:'KDIGO 2017; ESPGHAN Renal Guidelines'},
+  dialisis:{nota:'Hemodiálisis o diálisis peritoneal: GET 100–120%. Prot AUMENTADA: HD 1.5–2.0 g/kg/día (pérdidas en dializato), DP 2.0–3.0 g/kg/día (mayores pérdidas proteicas). Restricción K y P. DP: absorción de glucosa del dializato puede aportar 10–30% de calorías.',fe:1.15,prot:2.2,ref:'KDIGO; ISPD Pediatric Dialysis Guidelines 2019'},
+  trasplante_r:{nota:'Post-trasplante renal: fase aguda: 100–130% GER. Prot 2.0–3.0 g/kg/día (catabolismo + esteroides). Fase crónica: 1.2–1.5 g/kg/día. Restricción K+ y Mg+ si función retardada. Vigilar obesidad a largo plazo.',fe:1.2,prot:2.2,ref:'ASPEN Transplant Guidelines 2019'},
+  sn:{nota:'Síndrome nefrótico: GET normal. Prot 1.5–2.5 g/kg/día (compensar pérdidas urinarias masivas; no restricción proteica). Restricción de sodio y fluidos en edema. Riesgo de déficit de vitamina D, Zn, Ca.',fe:1.0,prot:2.0,ref:'KDIGO Nephrotic Syndrome 2021'},
+
+  // ── TRAUMA / CIRUGÍA / QUEMADURAS ──
+  cx_programada:{nota:'Cirugía programada: preoperatorio óptimo (sin ayuno prolongado). Postoperatorio: GET 110–120% GER. Inicio enteral precoz (<24h). Prot 1.5–2.0 g/kg/día. "Inmunonutrición" (arginina, omega-3) puede beneficiar cirugía mayor.',fe:1.15,prot:1.8,ref:'ASPEN Perioperative Nutrition; ESPEN Surgery Guidelines 2019'},
+  trauma_leve:{nota:'Trauma leve-moderado: GET 110–120% GER. Prot 1.5–2.0 g/kg/día. Inicio enteral temprano. Monitorizar glucemia. Evolucionar rápidamente a metas completas.',fe:1.2,prot:1.8,ref:'ASPEN Pediatric Critical Care 2017'},
+  trauma_grave:{nota:'Politrauma / trauma grave: fase aguda (0–48h): 80% GER. Fase flow (2–7d): 130–150% GER. Prot 2.0–3.0 g/kg/día. Inicio enteral <24h si hemodinámicamente estable. Monitorizar glucemia. ASPEN: evitar sobrealimentación aguda.',fe:1.4,prot:2.5,ref:'ASPEN 2017; Mehta NCP 2017; Veldscholte 2020'},
+  quemado_m:{nota:'Quemaduras 10–30% SCQ: GER aumentado 120–150%. GET 150% GER o más. Prot 2.5–3.0 g/kg/día (pérdidas por herida). Inicio enteral precoz (<6h). Fórmulas enriquecidas con arginina, Zn, vit C. Ambiente térmico templado reduce hipermetabolismo.',fe:1.5,prot:3.0,ref:'Veldscholte 2020; Hildreth 1990; ASPEN Burns'},
+  quemado_g:{nota:'Quemaduras >30% SCQ: hipermetabolismo masivo, GER aumentado 150–200%. GET hasta 2× GER. Prot 3.0–4.0 g/kg/día. La tasa metabólica puede permanecer elevada hasta meses-años post-quemadura. Calorimetría indirecta obligatoria si posible.',fe:1.8,prot:3.5,ref:'Hildreth 1990; Veldscholte 2020; ASPEN Burns Guidelines'},
+
+  // ── INFECCIÓN / SEPSIS ──
+  infec_leve:{nota:'Infección / fiebre leve-moderada: GER aumenta 7–13% por cada °C sobre 37°C (Talbot). Inicio enteral precoz. GET 110–120% GER. Prot 1.5–2.0 g/kg/día. Vigilar intolerancia digestiva. No restricción de alimentación por fiebre.',fe:1.15,prot:1.8,ref:'ASPEN 2017; Talbot 1938; Mehta 2017'},
+  sepsis:{nota:'Sepsis moderada: fase aguda (ebb, 0–48h): 50–70% GER (catabolismo defensivo). Fase flujo (>48h): 100–130% GER. Prot 1.5–2.5 g/kg/día. Inicio enteral precoz si sin vasopresores altas dosis. Evitar sobrealimentación aguda.',fe:1.3,prot:2.0,ref:'ASPEN/SCCM 2017; Jotterand-Chaparro 2023'},
+  sepsis_g:{nota:'Sepsis grave / shock séptico: fase aguda: 50–60% GER (los primeros 2–3 días). RESTRICCIÓN energética inicial mejora outcomes (PEPaNIC trial). Prot 1.5–3.0 g/kg/día. Inicio enteral cauteloso (<24h). Progresar a metas al estabilizar hemodinámia. NP complementaria si <60% meta enteral a 48h.',fe:1.2,prot:2.2,ref:'PEPaNIC trial Fivez 2016; ASPEN 2017; Jotterand-Chaparro 2023'},
+  covid:{nota:'COVID-19 / MISC pediátrico: hiperinflamación sistémica. GET 110–130%. Prot 1.5–2.5 g/kg/día. Vitamina D, Zn, omega-3 con evidencia de beneficio inmune. Nutrición enteral preferida. MISC puede generar respuesta hipercatabólica similar a sepsis.',fe:1.25,prot:2.0,ref:'ESPEN COVID Guidelines 2022; revisiones MISC 2021–2023'},
+
+  // ── ONCOLOGÍA ──
+  oncologia:{nota:'Oncología en quimioterapia activa: GET 120–140%. Prot 2.0–3.0 g/kg/día. Náuseas, mucositis y anorexia limitan ingesta. Nutrición enteral preferida. Evitar NP si no hay indicación clara. Vigilar: Zn, vit D, Fe, magnesio. Riesgo de síndrome de realimentación en desnutridos.',fe:1.3,prot:2.5,ref:'ASPEN Pediatric Oncology; ESPEN Cancer Guidelines 2021'},
+  tmo:{nota:'Trasplante de médula ósea (TMO/TCMH): fase acondicionamiento y aplasia: GET 130–150%, NP frecuente por mucositis severa. Prot 2.5–3.5 g/kg/día. Inicio enteral NJ si posible. EICH intestinal: malabsorción severa. Fase post-injerto: progresar oral.',fe:1.4,prot:3.0,ref:'ASPEN BMT Guidelines; ESPEN Cancer 2021'},
+  onco_remision:{nota:'Oncología en remisión / mantenimiento: GET según peso y actividad (similar a niño sano). Prot 1.5–2.0 g/kg/día. Recuperar estado nutricional. Actividad física. Vigilar: efectos tardíos de QT/RT sobre estado nutricional.',fe:1.05,prot:1.8,ref:'ESPEN Cancer Guidelines 2021'},
+
+  // ── METABÓLICAS / NUTRICIONALES ──
+  desnut:{nota:'Desnutrición aguda severa (MAG/SAM): inicio gradual para evitar síndrome de realimentación. Día 1–2: 70–80% meta calórica. Progresar en 5–7 días. Fase catch-up: 150–200 kcal/kg/día. Prot 2.0–3.0 g/kg/día. Vigilar: K, P, Mg, glucemia. Estándar OMS para MAG.',fe:1.5,prot:2.5,ref:'OMS SAM Guidelines 2013; Golden 2009; Briend 2014'},
+  desnut_mod:{nota:'Desnutrición moderada en recuperación: GET 110–130%. Prot 1.5–2.0 g/kg/día. Meta: 100–120 kcal/kg/día. Micronutrientes: Zn, hierro, vitaminas. Sin riesgo de realimentación severa pero monitorizar electrolitos.',fe:1.25,prot:1.8,ref:'OMS Guidelines 2013; Golden 2009'},
+  ecmo:{nota:'ECMO: GER puede estar reducido (sedación, hipotermia) o aumentado (infección, postcirugía). Calorimetría indirecta obligatoria. GET inicial 60–70% GER. Progresar según tolerancia. Prot 1.5–2.5 g/kg/día. Inicio enteral precoz vía NJ es seguro y factible.',fe:1.1,prot:2.0,ref:'ASPEN ECMO Guidelines 2021; Jotterand-Chaparro 2023'},
+  critico:{nota:'Paciente crítico PICU — fase aguda (primeros 2–3 días): inicio enteral con 50–70% del GER. EVITAR sobrealimentación aguda (evidencia de daño: PEPaNIC). Prot 1.5–2.0 g/kg/día. Objetivo a 48–72h: 100% GER enteral. NP complementaria si <60% meta a 48h.',fe:1.1,prot:2.0,ref:'ASPEN PICU 2017; PEPaNIC Fivez 2016; Jotterand-Chaparro 2023'},
+  critico_rec:{nota:'Paciente crítico PICU — fase de recuperación (post-aguda): GET 120–150% GER para compensar déficit calórico acumulado y promover catch-up. Prot 2.0–3.0 g/kg/día. Incluir actividad física progresiva. Objetivo crecimiento.',fe:1.35,prot:2.5,ref:'ASPEN 2017; Veldscholte 2020'},
+  premauro:{nota:'Prematuridad (RN prematuro hospitalizado): 110–150 kcal/kg/día para crecimiento adecuado. Prot 3.5–4.5 g/kg/día (necesidades muy altas en MBPN). Fórmula de prematuro o LM con HMF. Progresión enteral mínima desde el primer día. NP complementaria inicial.',fe:1.3,prot:3.8,ref:'ESPGHAN Preterm EN 2022; ASPEN Preterm PN 2023'},
+
+  // ── SÍNDROMES GENÉTICOS ──
+  down:{nota:'Síndrome de Down: riesgo de sobrepeso/obesidad. GER ~10–15% menor que la media para edad (menor masa muscular, hipotiroidismo frecuente). Prot según edad estándar. Meta: curvas específicas Zemel 2015. Actividad física esencial.',fe:0.85,prot:1.2,ref:'Zemel 2015; Adelekan 2012'},
+  turner:{nota:'Síndrome de Turner: requerimientos energéticos sin modificación mayor. Vigilar sobrepeso (riesgo metabólico). Calcio 1000–1500 mg/día y Vitamina D por riesgo de osteoporosis. Prot estándar para la edad. Monitorizar función tiroidea.',fe:1.0,prot:1.2,ref:'Bondy 2007; Turner Guidelines ENDO 2017'},
+  prader:{nota:'Síndrome de Prader-Willi: hiperfagia severa, riesgo de obesidad mórbida. GER reducido 30–40% vs niño típico. Restricción calórica estricta (60–70% de lo normal). Prot 1.5–2.0 g/kg/día. Meta IMC <P85 Prader-Willi. GH beneficioso.',fe:0.70,prot:1.8,ref:'Butler 2015; Goldstone 2015'},
+  acondr:{nota:'Acondroplasia: GER similar a talla real (no usar talla esperada para la edad). Riesgo de obesidad. Usar peso y talla actuales. Prot estándar para la edad. Evitar sobrepeso — agrava complicaciones ortopédicas.',fe:1.0,prot:1.2,ref:'Hoover-Fong 2020; Horton 1978'},
+};
+
+function onCondChange(){
+  const v=document.getElementById('e-cond').value;
+  const gb=document.getElementById('gmfcs-e-box');
+  gb.style.display=v==='pci'?'block':'none';
+  const nota=document.getElementById('cond-nota');
+  if(v!=='0'&&COND_INFO[v]){
+    nota.style.display='block';
+    const info=COND_INFO[v];
+    nota.innerHTML=`<strong>📋 Consideraciones nutricionales:</strong><br>${info.nota||info.notas?.[1]||''}`;
+  } else nota.style.display='none';
+  calcE();
+}
+
+function calcE(){
+  const peso      = G.peso  || 0;
+  const talla     = G.talla || 0;
+  const edadM_e   = G.tieneCorr ? G.edadCM : G.edadM;
+  const edadTotal = edadM_e / 12;
+  const sx        = G.sexo || '';
+  const fe=parseFloat(document.getElementById('e-estres').value)||1.0;
+  const fa=parseFloat(document.getElementById('e-act').value)||1.2;
+  const cond=document.getElementById('e-cond').value;
+  if(!peso) return;
+
+  // GER OMS
+  let gerOMS=0;
+  if(edadTotal<=3){
+    gerOMS=sx==='M'?60.9*peso-54:sx==='F'?61.0*peso-51:61.0*peso-52;
+  } else if(edadTotal<=10){
+    gerOMS=sx==='M'?22.7*peso+505:sx==='F'?22.5*peso+499:22.6*peso+502;
+  } else {
+    gerOMS=sx==='M'?17.5*peso+651:sx==='F'?12.2*peso+746:14.8*peso+698;
+  }
+  gerOMS=Math.max(gerOMS,0);
+
+  // GER Schofield (con peso, o con peso+talla si disponible)
+  let gerSCH=0;
+  if(edadTotal<3){
+    gerSCH=sx==='M'?0.167*peso*1000/4.184+1517.4:sx==='F'?16.252*peso+1023.2:gerOMS;
+    // Simplificado: Schofield 0-3: M: 59.512×P−30.4 F: 58.317×P−31.1
+    gerSCH=sx==='M'?59.512*peso-30.4:sx==='F'?58.317*peso-31.1:gerOMS;
+  } else if(edadTotal<10){
+    gerSCH=sx==='M'?22.706*peso+504.3:sx==='F'?20.315*peso+485.9:21.5*peso+495;
+  } else if(edadTotal<18){
+    gerSCH=sx==='M'?17.686*peso+658.2:sx==='F'?13.384*peso+692.6:15.5*peso+675;
+  } else {
+    gerSCH=sx==='M'?15.057*peso+692.2:sx==='F'?14.818*peso+486.6:15*peso+590;
+  }
+  gerSCH=Math.max(gerSCH,0);
+
+  // Factor condición especial
+  let fCond=1.0;
+  const info=COND_INFO[cond];
+  if(info){
+    if(cond==='pci'){
+      const gmfcs=parseInt(document.getElementById('e-gmfcs').value)||3;
+      fCond=info.factores[gmfcs]||1.0;
+      const notaEl=document.getElementById('cond-nota');
+      notaEl.style.display='block';
+      notaEl.innerHTML=`<strong>📋 PCI GMFCS ${gmfcs}:</strong><br>${info.notas[gmfcs]}`;
+    } else fCond=info.fe||1.0;
+  }
+
+  const getOMS=gerOMS*fe*fa*fCond;
+  const getSCH=gerSCH*fe*fa*fCond;
+
+  // Proteínas recomendadas
+  const protKg=info?.prot||(edadTotal<=0.5?2.2:edadTotal<=1?2.0:edadTotal<=3?1.5:edadTotal<=6?1.2:edadTotal<=10?1.0:0.9);
+  const protTotal=protKg*peso;
+
+  // Holliday-Segar
+  let vol=peso<=10?100*peso:peso<=20?1000+50*(peso-10):1500+20*(peso-20);
+
+  // Display
+  document.getElementById('e-ger-oms').textContent=Math.round(gerOMS);
+  document.getElementById('e-ger-sch').textContent=Math.round(gerSCH);
+  document.getElementById('e-ger-oms-kg').textContent=(gerOMS/peso).toFixed(1);
+  document.getElementById('e-ger-sch-kg').textContent=(gerSCH/peso).toFixed(1);
+  document.getElementById('e-get-oms').textContent=Math.round(getOMS);
+  document.getElementById('e-get-sch').textContent=Math.round(getSCH);
+  document.getElementById('e-get-oms-kg').textContent=(getOMS/peso).toFixed(1);
+  document.getElementById('e-get-sch-kg').textContent=(getSCH/peso).toFixed(1);
+  document.getElementById('e-prot').textContent=protTotal.toFixed(1)+' g';
+  document.getElementById('e-prot-kg').textContent=protKg.toFixed(1);
+  document.getElementById('e-vol').textContent=Math.round(vol);
+
+  const metodo=document.getElementById('e-metodo');
+  metodo.style.display='block';
+  metodo.textContent=`Ecuaciones: OMS (1985): ${edadTotal<=3?'60.9×P−54':'22.7×P+505'} | Schofield (1985): ${edadTotal<3?'59.5×P−30':'22.7×P+504'}. Factores aplicados: estrés ×${fe}, actividad ×${fa}${fCond!==1.0?', condición ×'+fCond.toFixed(2):''}`;
+
+  // Tabla comparativa
+  document.getElementById('e-tbody').innerHTML=`
+    <tr><td>GER (kcal/día)</td><td>${Math.round(gerOMS)}</td><td>${Math.round(gerSCH)}</td><td class="best">${Math.round((gerOMS+gerSCH)/2)} (prom.)</td></tr>
+    <tr><td>GER (kcal/kg/día)</td><td>${(gerOMS/peso).toFixed(1)}</td><td>${(gerSCH/peso).toFixed(1)}</td><td></td></tr>
+    <tr><td>GET con factores (kcal/día)</td><td>${Math.round(getOMS)}</td><td>${Math.round(getSCH)}</td><td class="best">${Math.round((getOMS+getSCH)/2)}</td></tr>
+    <tr><td>GET (kcal/kg/día)</td><td>${(getOMS/peso).toFixed(1)}</td><td>${(getSCH/peso).toFixed(1)}</td><td></td></tr>
+    <tr><td>Proteínas (g/kg/día)</td><td colspan="2" style="text-align:center">${protKg.toFixed(1)}</td><td class="best">${protTotal.toFixed(1)} g/día</td></tr>
+    <tr><td>Líquidos (mL/día)</td><td colspan="2" style="text-align:center">Holliday-Segar</td><td class="best">${Math.round(vol)} mL</td></tr>
+  `;
+}
+
+/* ═══════════════════ FÓRMULAS ═══════════════════ */
+const FCATS=[
+  {id:'adaptada',l:'Adaptada (0–12m)'},{id:'crecimiento',l:'Crecimiento (1–3 a)'},
+  {id:'p_hid',l:'Parc. Hidrolizada'},{id:'e_hid',l:'Ext. Hidrolizada'},
+  {id:'aa',l:'Aminoácidos'},{id:'pre',l:'Prematuro'},
+  {id:'ar',l:'Antirreflujo'},{id:'poli',l:'Polimérica'},
+  {id:'sl',l:'Sin Lactosa'},{id:'esp',l:'Especiales'},
+  {id:'mod',l:'Módulos'},{id:'mat',l:'Leche Materna'},
+];
+// ★ = Portafolio actual HDN Junio 2026 (datos de etiqueta)
+// ◆ = Fórmula adicional (datos de referencia del fabricante)
+const FFS={
+  adaptada:[
+    {n:'Enfalac ★ (HDN)',cc:13.0,km:0.67,pg:1.27,gm:4.3,
+     nt:'✅ HDN. Etiqueta: 0.67 kcal/mL, prot 1.27g/100mL. DHA+ARA, GOS/PDX. 0–12m. 1 medida (4.3g) en 30mL agua.'},
+    {n:'Bebelac Gold ★ (HDN)',cc:13.7,km:0.65,pg:1.30,gm:4.6,
+     nt:'✅ HDN. Etiqueta: 65 kcal/100mL, prot 1.3g/100mL. Inicio 0–6m. Nucleótidos, DHA, ARA. 1 medida (4.6g) en 30mL.'},
+    {n:'Similac 1 ◆ (0–6m)',cc:13.5,km:0.68,pg:1.45,gm:4.4,
+     nt:'◆ Similac 1: 68 kcal/100mL, prot 1.45g/100mL. OptiGRO (DHA, luteína, vit E). Inicio 0–6m. 1 medida (4.4g) en 30mL.'},
+    {n:'Similac 2 ◆ (6–12m)',cc:13.5,km:0.68,pg:1.65,gm:4.4,
+     nt:'◆ Similac 2 continuación: 68 kcal/100mL, prot 1.65g/100mL. Mayor hierro y calcio. 6–12m. 1 medida (4.4g) en 30mL.'},
+    {n:'NAN Optipro 1 ◆ (0–6m)',cc:13.1,km:0.67,pg:1.42,gm:4.37,
+     nt:'◆ NAN Optipro 1: 67 kcal/100mL, prot 1.42g/100mL. Proteína optimizada (whey:caseína 70:30). HMO, DHA, ARA, L.reuteri. 0–6m. 1 medida (4.37g) en 30mL.'},
+    {n:'NAN Optipro 2 ◆ (6–12m)',cc:13.2,km:0.67,pg:1.55,gm:4.4,
+     nt:'◆ NAN Optipro 2: 67 kcal/100mL, prot 1.55g/100mL. Mayor hierro y calcio que etapa 1. HMO, DHA, ARA. 6–12m. 1 medida (4.4g) en 30mL.'},
+    {n:'NAN Supreme 1 ◆ (0–6m)',cc:13.1,km:0.67,pg:1.28,gm:4.37,
+     nt:'◆ NAN Supreme 1: 67 kcal/100mL, prot 1.28g/100mL. Fórmula premium con HMO (2-FL + LNnT), OPO, DHA, ARA, L.reuteri. Microbiota más cercana a LM. 0–6m. 1 medida (4.37g) en 30mL.'},
+    {n:'NAN Supreme 2 ◆ (6–12m)',cc:13.2,km:0.67,pg:1.40,gm:4.4,
+     nt:'◆ NAN Supreme 2: 67 kcal/100mL, prot 1.40g/100mL. HMO (2-FL + LNnT), OPO, DHA, ARA. Continuación premium. 6–12m. 1 medida (4.4g) en 30mL.'},
+    {n:'NutriBaby 1 ◆ (0–6m)',cc:13.5,km:0.67,pg:1.40,gm:4.5,
+     nt:'◆ NutriBaby 1: 67 kcal/100mL, prot 1.40g/100mL. Inicio 0–6m. Prebióticos, DHA, ARA. 1 medida (4.5g) en 30mL.'},
+  ],
+  crecimiento:[
+    {n:'Enfagrow Premium ◆ (1–3a)',cc:14.8,km:0.71,pg:1.90,gm:9.8,
+     nt:'◆ Fórmula de crecimiento. Enfagrow Premium: 71 kcal/100mL, prot 1.9g/100mL. 1–3 años. 2 medidas (19.6g) en 180mL. DHA, hierro, vitaminas A y D.'},
+    {n:'Milex Kinder ◆ (1–6a)',cc:14.0,km:0.67,pg:1.80,gm:4.5,
+     nt:'◆ Fórmula de crecimiento. Milex Kinder: leche enriquecida. ~67 kcal/100mL, prot ~1.8g/100mL. 1–6 años. 3 medidas en 180mL. Vitaminas y minerales.'},
+    {n:'Similac 3 ◆ (1–3a)',cc:14.2,km:0.68,pg:1.80,gm:4.7,
+     nt:'◆ Fórmula de crecimiento. Similac 3: 68 kcal/100mL, prot 1.80g/100mL. OptiGRO. 1–3 años. 1 medida (4.7g) en 30mL.'},
+    {n:'NutriBaby 2 ◆ (6–24m)',cc:13.5,km:0.67,pg:1.70,gm:4.5,
+     nt:'◆ Fórmula de crecimiento. NutriBaby 2 continuación: 67 kcal/100mL, prot 1.7g/100mL. 6–24m. Prebióticos, DHA, ARA.'},
+    {n:'Enfagrow 2 ◆ (6–24m)',cc:13.5,km:0.67,pg:1.70,gm:4.5,
+     nt:'◆ Fórmula de crecimiento. Enfagrow 2: 67 kcal/100mL, prot 1.7g/100mL. 6–24m. DHA, hierro, vitaminas. 1 medida (4.5g) en 30mL.'},
+    {n:'Nido 1+ ◆ (1–3a)',cc:14.0,km:0.68,pg:1.85,gm:9.5,
+     nt:'◆ Fórmula de crecimiento. Nido 1+: ~68 kcal/100mL, prot 1.85g/100mL. 1–3 años. 3 cucharadas (28.5g) en 180mL. Vitaminas A, C, D, hierro, zinc. Probióticos.'},
+    {n:'Nido 3+ ◆ (3–5a)',cc:14.0,km:0.67,pg:1.60,gm:9.5,
+     nt:'◆ Fórmula de crecimiento. Nido 3+: ~67 kcal/100mL, prot 1.60g/100mL. 3–5 años. 3 cucharadas en 180mL. Hierro, calcio, vitamina D. Apoyo al sistema inmune.'},
+    {n:'Nido 5+ ◆ (5–12a)',cc:14.0,km:0.67,pg:1.55,gm:9.5,
+     nt:'◆ Fórmula de crecimiento. Nido 5+: ~67 kcal/100mL, prot 1.55g/100mL. 5–12 años. 3 cucharadas en 180mL. Calcio, hierro, vitaminas. Apoyo intelectual y físico.'},
+  ],
+  p_hid:[
+    {n:'NAN Comfort ★ (HDN)',cc:13.1,km:0.67,pg:1.40,gm:4.37,
+     nt:'✅ HDN. Etiqueta: 67 kcal/100mL, prot 1.4g/100mL. Hidrolizado parcial suero. HMO, L.reuteri. Cólico/estreñimiento. 1 medida (4.37g) en 30mL.'},
+    {n:'Nutrilon Comfort Omneo ★ (HDN)',cc:13.3,km:0.65,pg:1.50,gm:4.6,
+     nt:'✅ HDN. Etiqueta: 65 kcal/100mL, prot 1.5g/100mL. 3 medidas (13.8g) en 90mL. Hidrolizado parcial + GOS/FOS. Cólico, estreñimiento, reflujo.'},
+    {n:'Similac Comfort ◆',cc:13.5,km:0.68,pg:1.45,gm:4.4,
+     nt:'◆ Similac Comfort: 68 kcal/100mL, prot 1.45g/100mL. Baja lactosa 98%, hidrolizado parcial. Malestar digestivo leve. 0–12m. 1 medida (4.4g) en 30mL.'},
+  ],
+  e_hid:[
+    {n:'Nutrilon Pepti Junior ★ (HDN)',cc:12.5,km:0.66,pg:1.80,gm:4.3,
+     nt:'✅ HDN. Etiqueta: 66 kcal/100mL, prot 1.8g/100mL. 3 medidas (12.9g) en 90mL. Hidrolizado extenso suero + TCM. APLV mod-severa. Desde nacimiento.'},
+    {n:'Althera ◆ (Nestlé)',cc:13.8,km:0.67,pg:1.86,gm:4.6,
+     nt:'◆ Althera: 67 kcal/100mL, prot 1.86g/100mL. Hidrolizado extenso suero, sin lactosa. APLV moderada-severa. 1 medida (4.6g) en 30mL.'},
+    {n:'Nutramigen ◆ (Mead Johnson)',cc:14.2,km:0.68,pg:1.90,gm:4.7,
+     nt:'◆ Nutramigen: 68 kcal/100mL, prot 1.9g/100mL. Hidrolizado extenso caseína + LGG. APLV mod-severa. 1 medida (4.7g) en 30mL.'},
+    {n:'Pregestimil ◆',cc:14.0,km:0.68,pg:1.90,gm:4.6,
+     nt:'◆ Pregestimil: 68 kcal/100mL, prot 1.9g/100mL. Hidrolizado extenso caseína + 55% MCT. Malabsorción, quilotórax. 1 medida (4.6g) en 30mL.'},
+  ],
+  aa:[
+    {n:'Puramino ★ (HDN)',cc:14.0,km:0.67,pg:1.87,gm:4.7,
+     nt:'✅ HDN. Etiqueta: 0.67 kcal/mL, prot 1.87g/100mL. Aminoácidos libres, DHA, ARA. APLV severa, EoE, malabsorción grave. 0–24m.'},
+    {n:'Neocate Infant ◆ (0–12m)',cc:14.9,km:0.68,pg:1.99,gm:5.0,
+     nt:'◆ Neocate Infant: 68 kcal/100mL, prot ~2.0g/100mL. Aminoácidos libres. APLV severa, EoE, síndrome intestino corto. 0–12m. 1 medida (5.0g) en 30mL.'},
+    {n:'Neocate Junior ◆ (>1a)',cc:0,km:1.00,pg:3.30,gm:0,
+     nt:'◆ Neocate Junior: 100 kcal/100mL, prot 3.3g/100mL. Aminoácidos libres. >1 año. APLV severa, EoE, SBS. Listo para usar.'},
+    {n:'EleCare ◆',cc:14.8,km:0.68,pg:2.10,gm:4.9,
+     nt:'◆ EleCare: 68 kcal/100mL, prot 2.1g/100mL. Aminoácidos libres + DHA/ARA. APLV severa, malabsorción. 0–24m. 1 medida (4.9g) en 30mL.'},
+  ],
+  pre:[
+    {n:'NAN Prematuros ★ (HDN)',cc:16.3,km:0.81,pg:2.72,gm:5.44,
+     nt:'✅ HDN. Etiqueta: 80.76 kcal/100mL, prot 2.72g/100mL. 1 medida (5.44g) en 30mL. Ca735, P466mg/100g polvo. TCM. Desde nacimiento.'},
+    {n:'NutriBaby Prematuros ★ (HDN)',cc:16.3,km:0.79,pg:2.30,gm:5.44,
+     nt:'✅ HDN. Etiqueta: 79 kcal/100mL al 16%, prot 2.3g/100mL. Pre+Pro+Simbióticos. DHA, ARA, Zn, Fe. Desde nacimiento.'},
+    {n:'Enfamil Premature ◆',cc:14.5,km:0.80,pg:2.40,gm:4.8,
+     nt:'◆ Enfamil Premature: 80 kcal/100mL, prot 2.4g/100mL. MCT 40%, DHA, ARA. Ca150, P83mg/100mL. Desde nacimiento.'},
+    {n:'Similac Special Care ◆',cc:14.8,km:0.81,pg:2.20,gm:4.9,
+     nt:'◆ Similac Special Care: 81 kcal/100mL, prot 2.2g/100mL. Ca182, P100mg/100mL. MCT, nucleótidos. Prematuros hospitalizados.'},
+  ],
+  ar:[
+    {n:'NAN A.R. ★ (HDN)',cc:13.4,km:0.73,pg:1.95,gm:4.36,
+     nt:'✅ HDN. Etiqueta: 22 kcal/ración (30mL), prot 0.43g/ración. Almidón pregelatinizado. RGE. L.reuteri, HMO, DHA. 1 medida (4.36g) en 30mL.'},
+    {n:'Enfamil A.R. ◆',cc:13.8,km:0.68,pg:1.72,gm:4.6,
+     nt:'◆ Enfamil A.R.: 68 kcal/100mL, prot 1.72g/100mL. Arroz precocido, espesa espontáneamente. RGE. DHA, ARA. 0–12m.'},
+  ],
+  poli:[
+    {n:'Pediasure líquida ★ (HDN)',cc:0,km:1.00,pg:3.00,gm:0,
+     nt:'✅ HDN. Etiqueta: 100 kcal/100mL, prot 3.0g/100mL. Lata 220mL. Lista para usar. FOS, DHA. 1–10 años.'},
+    {n:'Enterex Total ★ (HDN)',cc:0,km:0.97,pg:3.80,gm:0,
+     nt:'✅ HDN. Líquido 237mL: ~230 kcal, prot 9g/ración. Sin gluten, apto intolerantes lactosa.'},
+    {n:'Pediasure Peptide ◆',cc:0,km:1.00,pg:3.00,gm:0,
+     nt:'◆ Pediasure Peptide: 100 kcal/100mL, prot 3.0g/100mL. Hidrolizado extenso, FOS. Malabsorción pediátrica. 1–10 años.'},
+    {n:'Frebini Kids ◆ (1.5 kcal/mL)',cc:0,km:1.50,pg:3.75,gm:0,
+     nt:'◆ Frebini Kids: 150 kcal/100mL. Alta densidad. Restricción hídrica (cardiopatía, ICC). 1–10 años.'},
+    {n:'Ensure ◆ (>8 años)',cc:0,km:1.06,pg:3.75,gm:0,
+     nt:'◆ Ensure líquido: 106 kcal/100mL, prot 3.75g/100mL. Polimérica completa. >8 años, adolescentes. 27 vitaminas y minerales. 237mL/lata.'},
+    {n:'Ascenda ◆ (>10 años)',cc:0,km:1.00,pg:4.00,gm:0,
+     nt:'◆ Ascenda: 100 kcal/100mL, prot 4.0g/100mL. Alta proteína. >10 años y adultos. HMB.'},
+  ],
+  sl:[
+    {n:'NAN Sin Lactosa ★ (HDN)',cc:13.3,km:0.67,pg:1.40,gm:4.44,
+     nt:'✅ HDN. Etiqueta: 67 kcal/100mL, prot 1.4g/100mL. 1L=133.2g+900mL. Sin lactosa, proteína vaca. L.reuteri, DHA. Desde nacimiento.'},
+    {n:'Similac Sensitive ◆ (sin lactosa)',cc:13.5,km:0.68,pg:1.40,gm:4.4,
+     nt:'◆ Similac Sensitive: 68 kcal/100mL, prot 1.4g/100mL. Sin lactosa (98%). Para intolerancia a lactosa confirmada. OptiGRO. 0–12m. 1 medida (4.4g) en 30mL.'},
+    {n:'Isomil ◆ (base soya)',cc:13.5,km:0.68,pg:1.65,gm:4.5,
+     nt:'◆ Isomil: 68 kcal/100mL, prot 1.65g/100mL. Proteína soya aislada. Sin lactosa, sin proteína vaca. Galactosemia, intolerancia severa. 0–12m.'},
+    {n:'Enfamil LactoFree ◆',cc:13.5,km:0.68,pg:1.46,gm:4.5,
+     nt:'◆ Enfamil LactoFree: 68 kcal/100mL, prot 1.46g/100mL. Sin lactosa, proteína suero vaca. DHA, ARA, hierro. 0–12m.'},
+  ],
+  esp:[
+    {n:'Similac 1 con lactosa ◆',cc:13.5,km:0.68,pg:1.45,gm:4.4,
+     nt:'◆ Para lactantes sin problemas digestivos. Fórmula estándar OptiGRO. 68 kcal/100mL, prot 1.45g/100mL. 0–12m.'},
+  ],
+  mod:[
+    {n:'Protifar ★ (HDN)',cc:0,km:3.68,pg:87.2,gm:0,
+     nt:'✅ HDN. Etiqueta: 368 kcal/100g, prot 87.2g/100g. 1 cucharada ≈ 5g = 18.4 kcal + 4.36g prot.'},
+    {n:'Aceite Vegetal ★ (HDN)',cc:0,km:9.00,pg:0,gm:0,
+     nt:'✅ HDN. 9 kcal/mL. 0g proteína. Agregar al final. No aumenta osmolaridad.'},
+    {n:'Enterex Karbs ★ (HDN)',cc:0,km:3.83,pg:0,gm:0,
+     nt:'✅ HDN. Etiqueta: 23 kcal/ración (6g). Maltodextrina 99%. 3.83 kcal/g. Sin sabor.'},
+    {n:'Enterex Espesante ★ (HDN)',cc:0,km:3.33,pg:0,gm:0,
+     nt:'✅ HDN. Etiqueta: 15 kcal/ración (4.5g). Almidón maíz modificado. Disfagia. 3.33 kcal/g. Prot 0g.'},
+    {n:'MCT Oil ◆',cc:0,km:8.30,pg:0,gm:0,
+     nt:'◆ Triglicéridos cadena media. 8.3 kcal/mL. Malabsorción de grasas, quilotórax. No requiere sales biliares.'},
+    {n:'Duocal ◆',cc:0,km:4.92,pg:0,gm:0,
+     nt:'◆ Grasa+CHO. 4.92 kcal/g. Sin proteína. Aumenta densidad calórica sin cambiar sabor.'},
+  ],
+  mat:[
+    {n:'Leche Materna (término)',cc:0,km:0.67,pg:1.20,gm:0,
+     nt:'Composición promedio leche madura. Varía entre madres y etapa. Siempre el primer alimento de elección.'},
+    {n:'Leche Materna (pretérmino)',cc:0,km:0.80,pg:1.80,gm:0,
+     nt:'Mayor densidad calórica y proteica post-parto prematuro. Considerar HMF en <34 sem o <1800g.'},
+  ],
+};
+const FREFS={
+  pre:{kc:[110,135],pr:[3.0,4.0],vo:[150,200],lb:'Prematuro'},
+  '0-6m':{kc:[100,120],pr:[1.8,2.2],vo:[150,200],lb:'0–6 m'},
+  '6-12m':{kc:[90,110],pr:[1.5,2.0],vo:[130,160],lb:'6–12 m'},
+  '1-3a':{kc:[80,100],pr:[1.2,1.5],vo:[100,130],lb:'1–3 a'},
+  '4-6a':{kc:[70,90],pr:[1.0,1.3],vo:[90,110],lb:'4–6 a'},
+  '7-10a':{kc:[60,80],pr:[1.0,1.2],vo:[70,90],lb:'7–10 a'},
+  '11-14a':{kc:[50,70],pr:[0.9,1.1],vo:[60,80],lb:'11–14 a'},
+  '>14a':{kc:[40,60],pr:[0.8,1.0],vo:[50,70],lb:'>14 a'},
+};
+const DIL_STD=[
+  {l:'Muy diluida (2/3 medida)',m:0.67,a:30},
+  {l:'Diluida (¾ medida)',m:0.75,a:30},
+  {l:'Estándar (1 medida/30 mL)',m:1,a:30},
+  {l:'Concentrada (1½ medida/30 mL)',m:1.5,a:30},
+  {l:'Alta conc. (2 medidas/30 mL)',m:2,a:30},
+];
+const FMODS=[
+  {n:'Protifar (HDN) ★',kc:3.68,pg:0.872},
+  {n:'Aceite Vegetal (HDN) ★',kc:9.00,pg:0},
+  {n:'Enterex Karbs (HDN) ★',kc:3.83,pg:0},
+  {n:'Enterex Espesante',kc:3.33,pg:0},
+  {n:'MCT Oil',kc:8.30,pg:0},
+  {n:'Duocal',kc:4.92,pg:0},
+];
+let fCur='adaptada';
+
+function bFC(){
+  const c=document.getElementById('f-ctags');c.innerHTML='';
+  FCATS.forEach(ct=>{
+    const t=document.createElement('button');
+    t.className='tag'+(ct.id===fCur?' on':'');t.textContent=ct.l;t.type='button';
+    t.onclick=()=>{fCur=ct.id;document.querySelectorAll('#f-ctags .tag').forEach(x=>x.classList.remove('on'));t.classList.add('on');popF();};
+    c.appendChild(t);
+  });
+}
+function popF(){
+  const s=document.getElementById('f-fsel');s.innerHTML='';
+  (FFS[fCur]||[]).forEach((f,i)=>{const o=document.createElement('option');o.value=i;o.textContent=f.n;s.appendChild(o);});
+  onFFC();
+}
+function getFF(){return (FFS[fCur]||[])[+document.getElementById('f-fsel').value]||{};}
+function onFFC(){
+  const f=getFF();
+  document.getElementById('f-ccb').value=(f.cc||0).toFixed(1);
+  document.getElementById('f-kmlb').value=(f.km||0).toFixed(2);
+  document.getElementById('f-pgb').value=(f.pg||0).toFixed(2);
+  document.getElementById('f-pctv').value=(f.cc||13.5).toFixed(1);
+  if(f.gm>0)document.getElementById('f-gpm').value=f.gm.toFixed(1);
+  document.getElementById('f-ftag').textContent=fCur==='mod'?'Módulo':fCur==='mat'?'Leche materna':'Fórmula pediátrica';
+  const nb=document.getElementById('f-fnota');
+  if(f.nt){nb.textContent=f.nt;nb.style.display='block';}else nb.style.display='none';
+  calcF();
+}
+function onFBE(){document.getElementById('f-pctv').value=document.getElementById('f-ccb').value;calcF();}
+function onFDC(){
+  const t=document.getElementById('f-dtype').value;
+  ['med','pct','vol'].forEach(k=>document.getElementById('fd-'+k).style.display=(t===k?'':'none'));
+  calcF();
+}
+function calcDR(m,a,gm,ccB,kmB,pgB,vT){
+  const tg=m*gm;const tv=a+tg*0.7;
+  const cp=(tg/tv)*100;const km=kmB*(cp/ccB);
+  const pml=(pgB/100)*(cp/ccB);
+  return {cp,km,kT:km*vT,pT:pml*vT};
+}
+function calcF(){
+  const f=getFF();
+  const ccB=parseFloat(document.getElementById('f-ccb').value)||13.5;
+  const kmB=parseFloat(document.getElementById('f-kmlb').value)||0.67;
+  const pgB=parseFloat(document.getElementById('f-pgb').value)||1.46;
+  const t=document.getElementById('f-dtype').value;
+  const vT=parseFloat(document.getElementById('f-volt').value)||200;
+  const peso = G.peso || 0;
+  const edad = document.getElementById('f-edad').value;
+  const gpm=parseFloat(document.getElementById('f-gpm').value)||4.4;
+  let cp=ccB,km=kmB;
+  if(fCur==='mod'||fCur==='mat'){cp=ccB;km=kmB;}
+  else if(t==='med'){const cu=parseFloat(document.getElementById('f-cuch').value)||1;const ag=parseFloat(document.getElementById('f-agua').value)||30;const tg=cu*gpm;const tv=ag+tg*0.7;cp=(tg/tv)*100;km=kmB*(cp/ccB);}
+  else if(t==='pct'){cp=parseFloat(document.getElementById('f-pctv').value)||ccB;km=kmB*(cp/ccB);}
+  else{const vf=parseFloat(document.getElementById('f-volf').value)||200;const pg=parseFloat(document.getElementById('f-polvog').value)||27.6;cp=(pg/vf)*100;km=kmB*(cp/ccB);}
+  const pmL=(pgB/100)*(cp/ccB);
+  const kBase=km*vT,pBase=pmL*vT;
+  let kMod=0,pMod=0;
+  document.querySelectorAll('#f-mlist .fme').forEach(r=>{
+    const a=parseFloat(r.querySelector('.fma').value)||0;
+    const k=parseFloat(r.querySelector('.fmk').value)||0;
+    const p=parseFloat(r.querySelector('.fmp').value)||0;
+    kMod+=a*k;pMod+=a*p;
+  });
+  const kT=kBase+kMod,pT=pBase+pMod,kmF=kT/vT;
+  document.getElementById('f-rk').textContent=Math.round(kT)+' kcal';
+  document.getElementById('f-rkml').textContent=kmF.toFixed(2)+' kcal/mL';
+  document.getElementById('f-rp').textContent=pT.toFixed(1)+' g';
+  document.getElementById('f-rconc').textContent=(fCur==='mat'||fCur==='mod')?'—':cp.toFixed(1)+'%';
+  const pkgEl=document.getElementById('f-pkg');const rbn=document.getElementById('f-refnota');
+  if(peso>0){
+    pkgEl.style.display='block';
+    const kkg=kT/peso,pKg=pT/peso,vkg=vT/peso;
+    document.getElementById('f-rkkg').textContent=kkg.toFixed(1);
+    document.getElementById('f-rpkg').textContent=pKg.toFixed(2);
+    document.getElementById('f-rvkg').textContent=vkg.toFixed(0)+' mL';
+    document.getElementById('dth-kkg').style.display='';
+    document.getElementById('dth-pkg').style.display='';
+    if(edad&&FREFS[edad]){
+      const r=FREFS[edad];
+      document.getElementById('f-rref').textContent=r.lb;
+      const ek=kkg<r.kc[0]?'↓ bajo':kkg>r.kc[1]?'↑ alto':'✓ adecuado';
+      const pk=pKg<r.pr[0]?'↓ bajo':pKg>r.pr[1]?'↑ alto':'✓ adecuado';
+      const vk=vkg<r.vo[0]?'↓ bajo':vkg>r.vo[1]?'↑ alto':'✓ adecuado';
+      rbn.className='av '+(ek==='✓ adecuado'&&pk==='✓ adecuado'?'ok':'warn');
+      rbn.style.display='block';
+      rbn.innerHTML=`<strong>Evaluación vs referencia (${r.lb}):</strong><br>Energía: <b>${kkg.toFixed(1)}</b> kcal/kg/día [${r.kc[0]}–${r.kc[1]}] → <b>${ek}</b><br>Proteína: <b>${pKg.toFixed(2)}</b> g/kg/día [${r.pr[0]}–${r.pr[1]}] → <b>${pk}</b><br>Volumen: <b>${vkg.toFixed(0)}</b> mL/kg/día [${r.vo[0]}–${r.vo[1]}] → <b>${vk}</b>`;
+    } else {document.getElementById('f-rref').textContent='—';rbn.style.display='none';}
+  } else {pkgEl.style.display='none';rbn.style.display='none';document.getElementById('dth-kkg').style.display='none';document.getElementById('dth-pkg').style.display='none';}
+  // Tabla diluciones
+  let tbody='';
+  if(fCur!=='mat'&&fCur!=='mod'){
+    DIL_STD.forEach(d=>{
+      const r=calcDR(d.m,d.a,gpm,ccB,kmB,pgB,vT);
+      const isC=Math.abs(r.cp-cp)<0.4;
+      const cls=isC?' class="hl"':'';
+      tbody+=`<tr${cls}><td>${d.l}${isC?' ← actual':''}</td><td>${r.cp.toFixed(1)}%</td><td>${r.km.toFixed(2)}</td><td>${Math.round(r.kT)}</td><td>${r.pT.toFixed(1)}</td>${peso>0?`<td>${(r.kT/peso).toFixed(1)}</td><td>${(r.pT/peso).toFixed(2)}</td>`:''}</tr>`;
+    });
+    const match=DIL_STD.some(d=>Math.abs(calcDR(d.m,d.a,gpm,ccB,kmB,pgB,vT).cp-cp)<0.4);
+    if(!match)tbody+=`<tr class="hl"><td>⭐ Dilución calculada</td><td>${cp.toFixed(1)}%</td><td>${km.toFixed(2)}</td><td>${Math.round(kT)}</td><td>${pT.toFixed(1)}</td>${peso>0?`<td>${(kT/peso).toFixed(1)}</td><td>${(pT/peso).toFixed(2)}</td>`:''}</tr>`;
+  } else tbody=`<tr><td colspan="7" style="text-align:center;color:var(--txs);font-style:italic">N/A para módulos o leche materna</td></tr>`;
+  document.getElementById('f-diltbody').innerHTML=tbody;
+  // Detalle
+  const filas=[
+    {h:1,t:'Fórmula base'},
+    {t:'Fórmula',v:getFF().n||'—'},
+    ...(fCur!=='mat'&&fCur!=='mod'?[{t:'Concentración calculada',v:cp.toFixed(1)+'%'}]:[]),
+    {t:'Densidad calórica',v:kmF.toFixed(2)+' kcal/mL'},{t:'Volumen preparado',v:vT+' mL'},
+    {t:'Kcal fórmula base',v:Math.round(kBase)+' kcal'},{t:'Proteína fórmula base',v:pBase.toFixed(1)+' g'},
+    ...(kMod>0?[{h:1,t:'Módulos'},{t:'Kcal módulos',v:Math.round(kMod)+' kcal'},{t:'Proteína módulos',v:pMod.toFixed(1)+' g'}]:[]),
+    {h:1,t:'TOTAL'},{t:'Kcal totales',v:Math.round(kT)+' kcal'},{t:'Proteína total',v:pT.toFixed(1)+' g'},
+    ...(peso>0?[{h:1,t:`Por kg (${peso} kg)`},{t:'kcal/kg/día',v:(kT/peso).toFixed(1)},{t:'g prot/kg/día',v:(pT/peso).toFixed(2)},{t:'mL/kg/día',v:(vT/peso).toFixed(0)}]:[]),
+  ];
+  document.getElementById('f-rdet').innerHTML=filas.map(r=>r.h?`<tr class="sh"><td colspan="2">${r.t}</td></tr>`:`<tr><td style="color:var(--txs)">${r.t}</td><td>${r.v}</td></tr>`).join('');
+  const wb=document.getElementById('f-wbox');
+  let w='';
+  if(fCur!=='mat'&&fCur!=='mod'){if(cp>ccB*1.5)w='⚠️ Concentración muy alta (>1.5×). Revisar con equipo clínico.';else if(cp<ccB*0.5)w='⚠️ Fórmula muy diluida (<50%). Aporte puede ser insuficiente.';}
+  wb.style.display=w?'block':'none';wb.textContent=w;
+}
+function addFMod(){
+  const d=document.createElement('div');
+  d.className='mg fme';
+  d.style.gridTemplateColumns='2fr 55px 55px 65px 65px 30px';
+  d.innerHTML=`<select class="fms" onchange="onFMS(this)" style="font-size:12px">
+    <option value="">Personalizado…</option>
+    ${FMODS.map((m,i)=>`<option value="${i}">${m.n}</option>`).join('')}
+  </select>
+  <input class="fma" type="number" min="0" step="0.5" value="5" title="Cantidad en gramos (g)" oninput="onModInput(this)" style="font-size:12px">
+  <input class="fmpct" type="number" min="0" max="100" step="0.5" value="" title="% del volumen total" placeholder="%" oninput="onModPct(this)" style="font-size:12px">
+  <input class="fmk" type="number" min="0" step="0.1" value="" oninput="calcF()" style="font-size:12px" placeholder="kcal/g">
+  <input class="fmp" type="number" min="0" step="0.01" value="" oninput="calcF()" style="font-size:12px" placeholder="prot g/g">
+  <button class="rbtn" onclick="this.closest('.fme').remove();calcF()" title="Eliminar">✕</button>`;
+  document.getElementById('f-mlist').appendChild(d);
+}
+function onModInput(el){
+  // When g changes, update % based on total volume
+  const vT=parseFloat(document.getElementById('f-volt').value)||200;
+  const g=parseFloat(el.value)||0;
+  const pctEl=el.closest('.fme').querySelector('.fmpct');
+  if(vT>0) pctEl.value=((g/vT)*100).toFixed(1);
+  calcF();
+}
+function onModPct(el){
+  // When % changes, update g based on total volume
+  const vT=parseFloat(document.getElementById('f-volt').value)||200;
+  const pct=parseFloat(el.value)||0;
+  const gEl=el.closest('.fme').querySelector('.fma');
+  gEl.value=((pct/100)*vT).toFixed(1);
+  calcF();
+}
+function onFMS(s){
+  if(!s.value) return;
+  const m=FMODS[+s.value],r=s.closest('.fme');
+  r.querySelector('.fmk').value=m.kc;
+  r.querySelector('.fmp').value=m.pg;
+  calcF();
+}
+
+bFC();popF();
+
+// Set today's date as default for evaluation date
+(function(){
+  const hoy = new Date().toISOString().split('T')[0];
+  const fev = document.getElementById('fev');
+  if(fev && !fev.value) fev.value = hoy;
+})();
+
+/* ═══════════════════ PANEL DIAGNÓSTICO ═══════════════════ */
+const DX_CATS = [
+  {
+    id:'desnutricion', label:'🥗 Desnutrición',
+    tags:[
+      'Desnutrición aguda severa (MAG/SAM)',
+      'Desnutrición aguda moderada',
+      'Desnutrición crónica (stunting)',
+      'Desnutrición postnatal / intrahospitalaria',
+      'Riesgo nutricional hospitalario',
+      'Síndrome de realimentación (riesgo)',
+    ]
+  },
+  {
+    id:'eim', label:'🧬 Errores Innatos del Metabolismo',
+    tags:[
+      'Fenilcetonuria (PKU)',
+      'Galactosemia clásica',
+      'Acidemia metilmalónica (MMA)',
+      'Acidemia propiónica',
+      'Acidemia isovalérica',
+      'Jarabe de arce (MSUD)',
+      'Tirosinemia tipo 1',
+      'Glutaricoaciduria tipo 1',
+      'Homocistinuria',
+      'Déficit de biotinidasa',
+      'Trastorno del ciclo de la urea (OTC, CPS, ASS)',
+      'Glucogenosis tipo I (Von Gierke)',
+      'Glucogenosis tipo II (Pompe)',
+      'Glucogenosis tipo III (Cori)',
+      'Déficit de VLCAD / LCHAD',
+      'Déficit de MCAD',
+      'Hipercolesterolemia familiar',
+      'Enfermedad de Niemann-Pick',
+      'Enfermedad de Gaucher',
+      'Mucopolisacaridosis',
+    ]
+  },
+  {
+    id:'sindromes', label:'🔬 Síndromes Genéticos',
+    tags:[
+      'Síndrome de Down (trisomía 21)',
+      'Síndrome de Turner (45,X)',
+      'Síndrome de Klinefelter (47,XXY)',
+      'Síndrome de Prader-Willi',
+      'Síndrome de Williams-Beuren',
+      'Síndrome de Angelman',
+      'Síndrome de Rett',
+      'Síndrome de DiGeorge (22q11)',
+      'Síndrome de Noonan',
+      'Síndrome de CHARGE',
+      'Síndrome de Cornelia de Lange',
+      'Síndrome de Smith-Lemli-Opitz',
+      'Síndrome de Beckwith-Wiedemann',
+      'Acondroplasia',
+      'Osteogénesis imperfecta',
+    ]
+  },
+  {
+    id:'neurologicas', label:'🧠 Enfermedades Neurológicas',
+    tags:[
+      'Parálisis cerebral infantil (PCI) — GMFCS I-II',
+      'Parálisis cerebral infantil (PCI) — GMFCS III-V',
+      'Encefalopatía hipóxico-isquémica',
+      'Epilepsia refractaria (dieta cetogénica)',
+      'Espina bífida / mielomeningocele',
+      'Distrofia muscular de Duchenne',
+      'Atrofia muscular espinal (SMA)',
+      'Síndrome de West / encefalopatías epilépticas',
+      'Lesión medular',
+      'Trauma craneoencefálico grave',
+    ]
+  },
+  {
+    id:'respiratorias', label:'🫁 Enfermedades Respiratorias',
+    tags:[
+      'Displasia broncopulmonar (DBP)',
+      'Fibrosis quística (FQ)',
+      'Asma severa persistente',
+      'Hipertensión pulmonar',
+      'Ventilación mecánica prolongada',
+      'Síndrome de aspiración crónica',
+      'Traqueostomía con disfagia',
+    ]
+  },
+  {
+    id:'cardiacas', label:'❤️ Enfermedades Cardíacas',
+    tags:[
+      'Cardiopatía congénita cianótica',
+      'Cardiopatía congénita acianótica',
+      'Insuficiencia cardíaca congestiva (ICC)',
+      'Postoperatorio de cirugía cardíaca',
+      'Trasplante cardíaco',
+      'Miocardiopatía',
+      'Hipertensión pulmonar severa',
+    ]
+  },
+  {
+    id:'digestivas', label:'🫃 Enfermedades Digestivas / Hepáticas',
+    tags:[
+      'Enfermedad de Crohn',
+      'Colitis ulcerativa (CU)',
+      'Síndrome de intestino corto (SBS)',
+      'Enfermedad celíaca',
+      'Alergia a proteína de leche de vaca (APLV)',
+      'Esofagitis eosinofílica (EoE)',
+      'Reflujo gastroesofágico severo (RGE)',
+      'Gastroparesia / dismotilidad intestinal',
+      'Fístula entero-cutánea',
+      'Hepatitis autoinmune',
+      'Hepatopatía crónica / cirrosis',
+      'Colestasis neonatal',
+      'Atresia biliar',
+      'Trasplante hepático',
+      'Síndrome de Alagille',
+      'Pancreatitis crónica',
+    ]
+  },
+  {
+    id:'renales', label:'🫘 Enfermedades Renales',
+    tags:[
+      'Enfermedad renal crónica (ERC) estadios 1-3',
+      'Enfermedad renal crónica (ERC) estadios 4-5',
+      'Síndrome nefrótico',
+      'Hemodiálisis pediátrica',
+      'Diálisis peritoneal',
+      'Trasplante renal',
+      'Tubulopatías (Fanconi, cistinosis)',
+    ]
+  },
+  {
+    id:'oncologia', label:'🎗️ Oncología y Trasplantes',
+    tags:[
+      'Leucemia linfoblástica aguda (LLA)',
+      'Tumor sólido (nefroblastoma, neuroblastoma, etc.)',
+      'Linfoma',
+      'Tumor cerebral pediátrico',
+      'Trasplante de médula ósea (TMO/TCMH)',
+      'Síndrome de caquexia oncológica',
+      'Post-quimioterapia / mucositis',
+    ]
+  },
+  {
+    id:'conducta', label:'🍽️ Trastornos Conducta Alimentaria',
+    tags:[
+      'Anorexia nerviosa',
+      'Bulimia nerviosa',
+      'ARFID (trastorno de ingesta evitativa-restrictiva)',
+      'Pica',
+      'Rumiación',
+      'Disfagia / trastorno de deglución',
+      'Hipersensorialidad oral',
+      'Alimentación por sonda dependiente (enteral)',
+    ]
+  },
+  {
+    id:'metabolismo', label:'⚡ Metabolismo Energético',
+    tags:[
+      'Diabetes mellitus tipo 1',
+      'Diabetes mellitus tipo 2 / obesidad',
+      'Síndrome metabólico pediátrico',
+      'Hipoglucemia hiperinsulinémica',
+      'Insulinorresistencia',
+      'Hipertrigliceridemia severa',
+      'Sobrepeso / obesidad (IMC >P85)',
+    ]
+  },
+  {
+    id:'prematuro', label:'👶 Prematuro / Neonatal',
+    tags:[
+      'Prematuridad extrema (<28 semanas)',
+      'Muy bajo peso al nacer (<1500g)',
+      'Bajo peso al nacer (1500-2500g)',
+      'Restricción del crecimiento intrauterino (RCIU)',
+      'Enterocolitis necrosante (ECN)',
+      'Osteopenia del prematuro',
+      'Colestasis asociada a NP',
+    ]
+  },
+];
+
+let dxSeleccionados = new Set();
+
+function buildDxPanel(){
+  const c = document.getElementById('dx-cats');
+  if(!c) return;
+  c.innerHTML = '';
+  DX_CATS.forEach(cat => {
+    const div = document.createElement('div');
+    div.className = 'dx-cat';
+    div.innerHTML = `<div class="dx-cat-title">${cat.label}</div><div class="dx-tags" id="dxtags-${cat.id}"></div>`;
+    c.appendChild(div);
+    const tagsEl = document.getElementById(`dxtags-${cat.id}`);
+    cat.tags.forEach(tag => {
+      const btn = document.createElement('button');
+      btn.className = 'dx-tag' + (dxSeleccionados.has(tag) ? ' on' : '');
+      btn.textContent = tag;
+      btn.onclick = () => toggleDx(tag, btn);
+      tagsEl.appendChild(btn);
+    });
+  });
+}
+
+function toggleDx(tag, btn){
+  if(dxSeleccionados.has(tag)){
+    dxSeleccionados.delete(tag);
+    btn.classList.remove('on');
+  } else {
+    dxSeleccionados.add(tag);
+    btn.classList.add('on');
+  }
+  updateDxChips();
+}
+
+function updateDxChips(){
+  const sel = document.getElementById('dx-selected');
+  const chips = document.getElementById('dx-chips');
+  if(dxSeleccionados.size === 0){ sel.style.display='none'; return; }
+  sel.style.display = 'block';
+  chips.innerHTML = '';
+  dxSeleccionados.forEach(tag => {
+    const chip = document.createElement('div');
+    chip.className = 'dx-chip';
+    chip.innerHTML = `<span>${tag}</span><button onclick="removeDx('${tag.replace(/'/g,"\\'")}')">×</button>`;
+    chips.appendChild(chip);
+  });
+}
+
+function removeDx(tag){
+  dxSeleccionados.delete(tag);
+  // Unmark button
+  document.querySelectorAll('.dx-tag').forEach(b => {
+    if(b.textContent === tag) b.classList.remove('on');
+  });
+  updateDxChips();
+}
+
+function generarPlanDx(){
+  if(dxSeleccionados.size === 0) return;
+
+  document.getElementById('dx-resultado').style.display = 'block';
+  document.getElementById('dx-loading').style.display = 'block';
+  document.getElementById('dx-plan-card').style.display = 'none';
+
+  // Build patient context
+  const nombre = G.nombre || 'Paciente';
+  const edadM  = G.tieneCorr ? G.edadCM : G.edadM;
+  const edadA  = edadM / 12;
+  const edadStr = edadM > 0 ? (Math.floor(edadA)>0 ? Math.floor(edadA)+'a '+edadM%12+'m' : edadM+'m') : 'no especificada';
+  const peso   = G.peso || 0;
+  const talla  = G.talla || 0;
+  const imc    = (peso&&talla) ? (peso/((talla/100)**2)).toFixed(1) : null;
+  const sexoT  = G.sexo==='M'?'masculino':G.sexo==='F'?'femenino':'no especificado';
+
+  // Simulate brief loading then show plan
+  setTimeout(() => {
+    document.getElementById('dx-loading').style.display = 'none';
+    document.getElementById('dx-plan-card').style.display = 'block';
+
+    const dxArr = [...dxSeleccionados];
+    document.getElementById('dx-plan-title').textContent =
+      '📋 Plan Nutricional — ' + dxArr.join(' + ');
+
+    // Build patient summary box
+    let patBox = '';
+    if(peso || edadM) {
+      patBox = `<div style="background:var(--azc);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12.5px;color:var(--az)">
+        <strong>👶 Paciente:</strong> ${nombre} · ${sexoT} · ${edadStr}
+        ${peso ? ' · <strong>'+peso+'kg</strong>' : ''}
+        ${talla ? ' / '+talla+'cm' : ''}
+        ${imc ? ' · IMC '+imc+' kg/m²' : ''}
+      </div>`;
+    }
+
+    // Generate plan for each selected diagnosis
+    let planHTML = patBox;
+    dxArr.forEach((dx, idx) => {
+      if(idx > 0) planHTML += `<hr style="border:none;border-top:2px dashed var(--bo);margin:18px 0">`;
+      planHTML += getDxPlan(dx, peso, edadA, edadM, G.sexo);
+    });
+
+    // If multiple dx, add integration note
+    if(dxArr.length > 1) {
+      planHTML += `<div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>🔗 Consideraciones por múltiples diagnósticos</h4>
+        <p>Al integrar <strong>${dxArr.length} diagnósticos</strong>, prioriza: 
+        (1) la condición con mayor impacto metabólico agudo, 
+        (2) las restricciones más estrictas son las que prevalecen cuando hay conflicto,
+        (3) adapta las metas calóricas sumando los factores de corrección pero evitando sobrealimentación.
+        Se recomienda valoración multidisciplinaria con equipo de nutrición, especialista de cada área y gastroenterología pediátrica.</p>
+      </div>`;
+    }
+
+    document.getElementById('dx-plan-content').innerHTML = planHTML;
+    document.getElementById('dx-resultado').scrollIntoView({behavior:'smooth', block:'start'});
+  }, 1200);
+}
+
+// ── PLANES NUTRICIONALES POR DIAGNÓSTICO ──
+function getDxPlan(dx, peso, edadA, edadM, sexo){
+  const p = peso || 0;
+  const ea = edadA || 0;
+  const sexoT = sexo==='M'?'masculino':sexo==='F'?'femenino':'no especificado';
+
+  // Helper to calc ranges with patient weight
+  function kcalR(min,max){ return p ? `<strong>${Math.round(min*p)}–${Math.round(max*p)} kcal/día</strong> (${min}–${max} kcal/kg/día)` : `<strong>${min}–${max} kcal/kg/día</strong>`; }
+  function protR(min,max){ return p ? `<strong>${(min*p).toFixed(1)}–${(max*p).toFixed(1)} g/día</strong> (${min}–${max} g/kg/día)` : `<strong>${min}–${max} g/kg/día</strong>`; }
+
+  // DATABASE of plans
+  const plans = {
+
+    // ─── DESNUTRICIÓN ───
+    'Desnutrición aguda severa (MAG/SAM)': `
+      <div class="dx-plan-section" style="border-left-color:#b52b22">
+        <h4>📊 Impacto nutricional</h4>
+        <p>MAG/SAM: Z P/T &lt;−3 o MUAC &lt;11.5 cm. Alta mortalidad sin intervención. Riesgo de síndrome de realimentación al inicio de soporte nutricional. Alteración de todos los sistemas por déficit proteico-energético severo.</p>
+        <div class="dx-warn">⚠️ RIESGO DE SÍNDROME DE REALIMENTACIÓN: iniciar con 50–75% de la meta calórica y escalar en 5–7 días. Vigilar K, P, Mg, glucemia en las primeras 72h.</div>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos — Protocolo OMS MAG</h4>
+        <p><strong>Fase estabilización (días 1–7):</strong> ${kcalR(80,100)} · ${protR(1.0,1.5)}<br>
+        <strong>Fase rehabilitación (semanas 2–6):</strong> ${kcalR(150,220)} · ${protR(2.0,3.0)}<br>
+        <strong>Fase seguimiento:</strong> ${kcalR(100,150)} · ${protR(1.5,2.5)}<br>
+        Progresar gradualmente. Meta de ganancia: 10–20 g/kg/día en rehabilitación.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#7c3aed">
+        <h4>🍼 Vía y fórmula</h4>
+        <p>Preferir vía oral con RUTF (Ready-to-Use Therapeutic Food) si tolera. Si APLV o falla oral: <strong>fórmula F-75</strong> (estabilización: 75 kcal/100mL) → <strong>F-100</strong> (rehabilitación: 100 kcal/100mL). Enteral (SNG/NGT) si ingesta &lt;75% meta. Parenteral solo si tracto GI no funcional.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos prioritarios</h4>
+        <p>Ácido fólico 5mg día 1, luego 1mg/día · Zinc 2mg/kg/día (máx 40mg) · Vitamina A dosis única según edad · Hierro (solo en fase rehabilitación, no estabilización) · Multivitamínico con vitaminas B, C · Potasio 3–4 mEq/kg/día · Magnesio 0.4–0.6 mEq/kg/día</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#b52b22">
+        <h4>⚠️ Monitoreo</h4>
+        <p>Glucemia cada 4–6h primeras 48h · Electrolitos (K, P, Mg, Na) diarios · Temperatura · Peso cada 48–72h · Edemas · Signos de hipoglucemia e hipotermia · MUAC semanal.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#0891b2">
+        <h4>🎯 Metas</h4>
+        <p>Corto plazo (4–6 sem): MUAC ≥12.5 cm, Z P/T ≥−2 · Largo plazo: recuperar canal de crecimiento, Z T/E ≥−2.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>OMS Guidelines for Management of SAM in Children 2013 · Golden MH, Acta Paediatr 2009 · ASPEN Pediatric Malnutrition 2014 · Briend A et al. Food Nutr Bull 2014</p>
+      </div>`,
+
+    'Desnutrición crónica (stunting)': `
+      <div class="dx-plan-section" style="border-left-color:#c47f00">
+        <h4>📊 Impacto nutricional</h4>
+        <p>Z T/E &lt;−2. Refleja déficit nutricional crónico iniciado en etapas tempranas. Impacto sobre neurodesarrollo, inmunidad y riesgo metabólico a largo plazo. A diferencia de la emaciación, el catch-up de talla es posible pero lento.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos</h4>
+        <p>Energía: ${kcalR(100,130)} · Proteína: ${protR(1.5,2.0)}<br>
+        Priorizar alimentos de alta densidad nutricional. Suplementación complementaria. Evitar sobrealimentación abrupta (riesgo obesidad futura).</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos</h4>
+        <p>Zinc 10–20 mg/día × 3 meses (impacto en talla demostrado) · Vitamina D 600–1000 UI/día · Hierro si déficit confirmado · Calcio adecuado para la edad · Ácidos grasos omega-3</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#0891b2">
+        <h4>🎯 Metas</h4>
+        <p>Recuperar velocidad de crecimiento normal para la edad · Z T/E ≥−2 a largo plazo · Neurodesarrollo adecuado · Intervención temprana antes de los 2 años es crítica (ventana de oportunidad).</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>Victora CG et al. Lancet 2008 · UNICEF/OMS IYCF Guidelines · Black RE et al. Lancet 2013</p>
+      </div>`,
+
+    'Desnutrición postnatal / intrahospitalaria': `
+      <div class="dx-plan-section" style="border-left-color:#c47f00">
+        <h4>📊 Impacto</h4>
+        <p>Prevalencia 20–50% en pacientes hospitalizados. Asociada a mayor estancia, complicaciones e infecciones. Causas: ayuno por procedimientos, inadecuado soporte nutricional, aumento de catabolismo. Herramienta de tamizaje: STAMP, STRONGkids, PNRS.</p>
+        <div class="dx-warn">⚠️ Evaluar riesgo nutricional con herramienta validada en las primeras 24–48h de hospitalización.</div>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos</h4>
+        <p>Energía mantenimiento: ${kcalR(80,100)} · Recuperación/catch-up: ${kcalR(120,150)}<br>
+        Proteínas: ${protR(1.5,2.5)}<br>
+        Inicio de soporte nutricional dentro de 24–48h de identificado el riesgo.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#7c3aed">
+        <h4>🍼 Vía de soporte</h4>
+        <p>Preferir vía oral enriquecida (suplementos orales, enriquecimiento de alimentos). Enteral (SNG) si ingesta oral &lt;60% de la meta. Parenteral complementaria si tracto GI comprometido &gt;5 días.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>Mehta NM et al. JPEN 2013 · Joosten K, Hulst JM Clin Nutr 2011 · ASPEN Pediatric Nutrition Guidelines 2014</p>
+      </div>`,
+
+    // ─── ERRORES INNATOS ───
+    'Fenilcetonuria (PKU)': `
+      <div class="dx-plan-section" style="border-left-color:#7c3aed">
+        <h4>📊 Impacto metabólico-nutricional</h4>
+        <p>Déficit de fenilalanina-hidroxilasa. Acumulación de fenilalanina (Phe) → daño neurológico severo. Tratamiento nutricional es la base del manejo. Control estricto de Phe para mantener niveles 2–6 mg/dL (&lt;2 años) y 2–10 mg/dL (>2 años).</p>
+        <div class="dx-warn">⚠️ RESTRICCIÓN ESTRICTA DE FENILALANINA de por vida. Fórmula metabólica libre de Phe obligatoria como fuente principal de proteínas.</div>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos</h4>
+        <p>Energía: ${kcalR(100,120)} · Proteína total: ${protR(2.5,4.0)} (proteína equivalente de fórmula + proteína natural)<br>
+        Fenilalanina tolerada: 200–400 mg/día (varía por fenotipo) · Tirosina suplementada: 100–150 mg/kg/día</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#c47f00">
+        <h4>🚫 Restricciones dietéticas</h4>
+        <p><strong>Eliminar:</strong> carnes, pollo, pescado, huevos, lácteos, leguminosas, nueces, trigo regular, aspartamo (contiene Phe).<br>
+        <strong>Permitido en cantidades controladas:</strong> frutas, verduras bajas en Phe, almidones especiales sin Phe, fórmulas metabólicas.<br>
+        <strong>Libres:</strong> agua, aceites, azúcar, almidón de maíz.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos</h4>
+        <p>Fórmula libre de Phe (Phenyl-free, PKU Anamix, XP Maxamaid) como fuente proteica principal · Vitamina B12 · Vitamina D · Calcio · Hierro · Zinc · Selenio · Ácidos grasos omega-3 (DHA)</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#b52b22">
+        <h4>⚠️ Monitoreo</h4>
+        <p>Phe sérica semanal primer año, luego mensual · Tirosina sérica · Estado nutricional mensual · Neurodesarrollo · Densidad ósea anual desde los 5 años · En adolescentes femeninas: Phe &lt;6 mg/dL antes de embarazo (PKU materna).</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>van Wegberg AMJ et al. Orphanet J Rare Dis 2017 · ACMG PKU Guidelines 2018 · ESPKU Guidelines 2017</p>
+      </div>`,
+
+    'Galactosemia clásica': `
+      <div class="dx-plan-section" style="border-left-color:#7c3aed">
+        <h4>📊 Impacto metabólico</h4>
+        <p>Déficit de galactosa-1-fosfato uridiltransferasa (GALT). Acumulación de Gal-1-P → daño hepático, cerebral, ovárico. Diagnóstico neonatal por tamizaje. Inicio inmediato de dieta sin galactosa salva la vida.</p>
+        <div class="dx-warn">⚠️ SUSPENDER LACTANCIA MATERNA Y FÓRMULAS CON LACTOSA INMEDIATAMENTE al diagnóstico.</div>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#c47f00">
+        <h4>🚫 Restricciones ESTRICTAS de por vida</h4>
+        <p><strong>Eliminar:</strong> leche materna, fórmulas con lactosa, leche de vaca/cabra/oveja, quesos, yogur, cremas, mantequilla, chocolate con leche, alimentos procesados con lactosa/galactosa, vísceras (hígado, riñón), algunas leguminosas (lentejas, soya entera).<br>
+        <strong>Fórmula base:</strong> soya (<em>en galactosemia tipo 2 puede ser problemática</em>) o fórmula elemental sin galactosa.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos</h4>
+        <p>Energía: ${kcalR(100,120)} · Proteína: ${protR(1.5,2.5)} (proteína de soya o elemental)<br>
+        Calcio: 800–1200 mg/día (suplementar por restricción láctea) · Vitamina D: 600–1000 UI/día</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos</h4>
+        <p>Calcio + Vitamina D (por eliminación de lácteos) · Vitamina K · Seguimiento de función ovárica en niñas (riesgo insuficiencia ovárica primaria) · Vitamina B12 si dieta vegana</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>Welling L et al. J Inherit Metab Dis 2017 · Demirbas D et al. Biochim Biophys Acta 2018</p>
+      </div>`,
+
+    'Displasia broncopulmonar (DBP)': `
+      <div class="dx-plan-section" style="border-left-color:#0891b2">
+        <h4>📊 Impacto nutricional</h4>
+        <p>DBP: enfermedad pulmonar crónica del prematuro. Gasto energético aumentado por trabajo respiratorio elevado. Frecuente restricción hídrica por cor pulmonale y edema. Alto riesgo de desnutrición: 30–50% de pacientes con DBP. Ciclo vicioso: desnutrición → peor función pulmonar → mayor dificultad para alimentar.</p>
+        <div class="dx-warn">⚠️ Restricción hídrica frecuente (120–150 mL/kg/día) → necesidad de fórmula concentrada para alcanzar metas calóricas.</div>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos</h4>
+        <p>Energía: ${kcalR(130,160)} (mayor gasto por taquipnea) · Proteína: ${kcalR ? protR(3.0,4.0) : '3.0–4.0 g/kg/día'}<br>
+        <strong>Si restricción hídrica:</strong> concentrar fórmula a 1.0–1.5 kcal/mL (Frebini Kids, Pediasure) o enriquecer LM con HMF + módulos calóricos (Protifar + aceite vegetal).</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#7c3aed">
+        <h4>🍼 Fórmula recomendada</h4>
+        <p><strong>Con restricción hídrica:</strong> Frebini Kids 1.5 kcal/mL a menor volumen · <strong>Sin restricción:</strong> NAN Prematuro o NutriBaby Prematuro concentrado al 16–18% · <strong>LM con HMF</strong> si disponible (preferencia).<br>
+        Evitar sobrecarga de CHO (aumenta CO₂ y carga respiratoria). Aumentar proporción de grasa (MCT bien tolerado).</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos</h4>
+        <p>Vitamina D 800–1000 UI/día · Vitamina A 1500 UI/día (regeneración epitelio pulmonar) · Calcio y Fósforo (osteopenia del prematuro) · Vitamina E · Hierro · Cafeína (si aún en uso terapéutico)</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#b52b22">
+        <h4>⚠️ Monitoreo</h4>
+        <p>Peso diario · Balance hídrico · Electrolitos semanales (diuréticos pueden causar hipocalemia, hipocloremia) · Densidad ósea · FR y SpO₂ durante alimentación · Evaluación de disfagia y aspiración</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#0891b2">
+        <h4>🎯 Metas</h4>
+        <p>Ganancia de peso 20–30 g/día (prematuro) · Z P/E ≥−2 · Lograr alimentación oral completa · Destetar O₂ con buen estado nutricional.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>Tolia VN et al. J Perinatol 2010 · ESPGHAN Preterm EN 2022 · Biniwale MA, Ehrenkranz RA Semin Perinatol 2006</p>
+      </div>`,
+
+    'Fibrosis quística (FQ)': `
+      <div class="dx-plan-section" style="border-left-color:#0891b2">
+        <h4>📊 Impacto nutricional</h4>
+        <p>El estado nutricional es predictor independiente de función pulmonar y sobrevida en FQ. Objetivo: mantener IMC ≥P50 para la edad. ~85% tienen insuficiencia pancreática exocrina → malabsorción de grasas y vitaminas liposolubles. Mayor gasto energético por infecciones crónicas y trabajo respiratorio.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos</h4>
+        <p>Energía: ${kcalR(110,150)} (120–150% de recomendación normal) · Proteína: ${protR(2.0,3.0)}<br>
+        <strong>Grasa:</strong> 35–40% del VCT. SIN restricción de grasa. La malabsorción se maneja con enzimas, no con restricción.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#c47f00">
+        <h4>🚫 Sin restricción de grasa</h4>
+        <p>Dieta alta en grasas y calorías. Alimentos energéticos: cremas, mantequilla, aceites, quesos. Suplementos orales hipercalóricos si ingesta insuficiente. Gastrostomía cuando ingesta oral &lt;80% de metas a pesar de intervención.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos esenciales</h4>
+        <p><strong>Enzimas pancreáticas (PERT):</strong> 500–2500 U lipasa/kg/comida (ajustar por síntomas, NO superar 10000 U/kg/día por riesgo de colopatía fibrosante)<br>
+        <strong>Vitaminas liposolubles en forma hidrosoluble:</strong> Vit A 4000–10000 UI/día · Vit D 800–4000 UI/día · Vit E 100–400 mg/día · Vit K 1–10 mg/día<br>
+        Sal extra (2–4g NaCl/día, más en verano/ejercicio) · Zinc 15–30 mg/día</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#b52b22">
+        <h4>⚠️ Monitoreo</h4>
+        <p>IMC mensual · Niveles de vitaminas liposolubles (A, D, E, K) anual · Densidad ósea desde 8–10 años · HbA1c anual desde 10 años (CFRD) · Función hepática · Albúmina, prealbúmina</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>ESPEN-ESPGHAN-ECFS CF Guidelines 2016 · Turck D et al. J Cyst Fibros 2016 · Stallings VA et al. J Am Diet Assoc 2008</p>
+      </div>`,
+
+    'Parálisis cerebral infantil (PCI) — GMFCS III-V': `
+      <div class="dx-plan-section" style="border-left-color:#na">
+        <h4>📊 Impacto nutricional</h4>
+        <p>Desnutrición en 46–90% de PCI GMFCS III-V. Causas: disfagia orofaríngea (60–80%), reflujo gastroesofágico, estreñimiento crónico, espasticidad (aumenta GER), limitación motora (reduce GER). Evaluación multidimensional obligatoria.</p>
+        <div class="dx-warn">⚠️ El GER en GMFCS IV-V es 30–40% MENOR que niño sano de igual edad y peso por ausencia de actividad física. No sobrealimentar.</div>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos por nivel GMFCS</h4>
+        <p><strong>GMFCS III:</strong> ${kcalR(60,80)} · <strong>GMFCS IV:</strong> ${kcalR(50,70)} · <strong>GMFCS V:</strong> ${kcalR(45,65)}<br>
+        Proteínas: ${protR(1.2,2.0)}<br>
+        Usar talla estimada (talla rodilla-talón × 2.69 + 24.2 para &gt;12 años) si no se puede medir en bipedestación.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#7c3aed">
+        <h4>🍼 Vía de alimentación</h4>
+        <p><strong>GMFCS III:</strong> oral + espesante si disfagia · <strong>GMFCS IV-V:</strong> evaluar gastrostomía percutánea (PEG) si disfagia severa, tiempo de alimentación &gt;3h/día, infecciones respiratorias recurrentes por aspiración o ingesta &lt;80% meta.<br>
+        Fórmula: Pediasure 1 kcal/mL o Frebini Kids 1.5 kcal/mL según volumen tolerado.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos</h4>
+        <p>Vitamina D 800–2000 UI/día (riesgo osteoporosis por inmovilidad + anticonvulsivantes) · Calcio 500–1000 mg/día · Fibra (estreñimiento crónico) · Zinc · Hierro · Omega-3</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#b52b22">
+        <h4>⚠️ Monitoreo</h4>
+        <p>Peso mensual (báscula silla para GMFCS IV-V) · Comparar con curvas de Brooks 2011 por nivel GMFCS · PC cada 3–6 meses · Evaluar disfagia con videofluoroscopia si sospecha aspiración · Densidad ósea anual</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>Romano et al. ESPGHAN Neurological Impairment Guidelines 2017 · Brooks J et al. Pediatrics 2011 · Kuperminc MN, Stevenson RD Dev Disabil Res Rev 2008</p>
+      </div>`,
+
+    'Parálisis cerebral infantil (PCI) — GMFCS I-II': `
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>📊 Impacto nutricional</h4>
+        <p>PCI leve-moderada (GMFCS I-II). Desnutrición menos frecuente pero prevalente. Disfagia leve posible. Actividad física generalmente mantenida. Riesgo de sobrepeso si espasticidad reduce gasto.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos</h4>
+        <p>Energía: ${kcalR(70,90)} (similar a niño sano con ajuste según actividad) · Proteínas: ${protR(1.2,1.8)}<br>
+        Vigilar IMC: riesgo tanto de desnutrición como de sobrepeso.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos</h4>
+        <p>Vitamina D 600–1000 UI/día · Calcio según ingesta · Hierro si anemia · Fibra si estreñimiento</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>Romano et al. ESPGHAN 2017 · Brooks J et al. Pediatrics 2011</p>
+      </div>`,
+
+    'Epilepsia refractaria (dieta cetogénica)': `
+      <div class="dx-plan-section" style="border-left-color:#7c3aed">
+        <h4>📊 Indicación</h4>
+        <p>Dieta cetogénica (DC) indicada en epilepsia farmacorresistente (falla ≥2 antiepilépticos), síndrome de Dravet, deficiencia de GLUT1, déficit de piruvato deshidrogenasa. Eficacia: 50% reducción convulsiones en 50% de pacientes.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Distribución macronutrientes</h4>
+        <p><strong>Ratio cetogénico 4:1</strong> (grasa:proteína+CHO en gramos): 80–90% grasa, 6–10% proteína, 2–5% CHO<br>
+        Energía: ${kcalR(90,110)} · Proteínas: ${protR(1.0,1.5)} (mínimo para crecimiento)<br>
+        <strong>Ratio 3:1</strong> para lactantes o si difícil tolerancia.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#c47f00">
+        <h4>🚫 Restricciones estrictas</h4>
+        <p>CHO máximo 10–20g/día (todos los alimentos deben pesarse) · Prohibido: azúcar, miel, jugos, pan, pasta, arroz, frutas dulces, leches con lactosa (o limitar).<br>
+        Todos los medicamentos deben ser libres de carbohidratos (verificar excipientes).</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos obligatorios</h4>
+        <p>Multivitamínico sin azúcar · Calcio 500–1000 mg/día · Vitamina D 600–1000 UI/día · Selenio · Zinc · Fósforo · L-carnitina (si carnitina sérica baja)</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#b52b22">
+        <h4>⚠️ Complicaciones y monitoreo</h4>
+        <p>Hipoglucemia al inicio · Hiperlipidemia (colesterol, triglicéridos) · Litiasis renal (hidratación adecuada + citrato potásico) · Osteoporosis · Estreñimiento · Acidosis metabólica<br>
+        Monitoreo: cetonas en orina/sangre diario · BHB sérica objetivo 2–5 mmol/L · Perfil lipídico 3–6 meses</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>Kossoff EH et al. Epilepsia 2018 (International Ketogenic Diet Study Group) · ILAE Dietary Therapies 2022</p>
+      </div>`,
+
+    'Anorexia nerviosa': `
+      <div class="dx-plan-section" style="border-left-color:#b52b22">
+        <h4>📊 Impacto nutricional</h4>
+        <p>AN: restricción calórica severa, distorsión de imagen corporal. Impacto multiorgánico: bradicardia, amenorrea, osteopenia/osteoporosis, disfunción hepática, pancitopenia, edema de realimentación.</p>
+        <div class="dx-warn">⚠️ SÍNDROME DE REALIMENTACIÓN: riesgo muy alto en AN severa (IMC &lt;14). Inicio lento y escalada gradual. Monitoreo cardíaco y electrolítico obligatorio.</div>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Protocolo de realimentación</h4>
+        <p><strong>Inicio:</strong> 30–40 kcal/kg/día o 1200 kcal/día (lo que sea mayor) en casos severos hospitalización · Incrementar 200 kcal/día cada 2–3 días si sin complicaciones<br>
+        <strong>Meta:</strong> ${kcalR(70,100)} para mantenimiento · ${kcalR(30,40)} como inicio seguro si IMC &lt;14<br>
+        Proteínas: ${protR(1.2,1.5)}</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos esenciales</h4>
+        <p>Tiamina (B1) 100–300 mg/día ANTES de iniciar carbohidratos (prevención Wernicke) · Fósforo 250–500 mg 3×/día × 2 semanas · Potasio · Magnesio · Multivitamínico · Calcio 1000–1500 mg/día + Vitamina D (osteopenia) · Zinc 14–25 mg/día (mejora apetito)</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#b52b22">
+        <h4>⚠️ Monitoreo crítico</h4>
+        <p>ECG basal y a las 48–72h de inicio · K, P, Mg, Ca, Na, glucemia diarios primeros 5 días · Peso 2×/semana · Signos vitales cada 8h (bradicardia, hipotensión) · Edema periférico</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#7c3aed">
+        <h4>🍼 Vía de soporte</h4>
+        <p>Preferir vía oral estructurada con apoyo psicológico. SNG nocturna si ingesta &lt;75% meta o negativa al tratamiento en contexto de riesgo vital. NP solo si complicación GI severa.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>NICE Eating Disorders Guidelines 2017 · Golden NH et al. Pediatrics 2015 · APA Practice Guidelines 2006 (updated 2023)</p>
+      </div>`,
+
+    'ARFID (trastorno de ingesta evitativa-restrictiva)': `
+      <div class="dx-plan-section" style="border-left-color:#c47f00">
+        <h4>📊 Impacto nutricional</h4>
+        <p>ARFID: restricción por sensorialidad, miedo a atragantarse o falta de interés, sin distorsión de imagen. Frecuente en TEA, neurodesarrollo atípico, trauma por atragantamiento. Riesgo: déficits de micronutrientes, desnutrición por ingesta selectiva extrema.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos</h4>
+        <p>Energía y proteínas según edad y peso normal. El problema no es la cantidad sino la variedad.<br>
+        Suplementar micronutrientes deficientes según ingesta habitual (perfil de lo que SÍ come).</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#7c3aed">
+        <h4>🍼 Estrategia nutricional</h4>
+        <p>Identificar alimentos "seguros" del paciente · Enriquecer caloricamente los alimentos aceptados (aceites, cremas, quesos si tolera) · Exposición gradual a nuevos alimentos con terapia de alimentación · Suplemento oral si ingesta insuficiente · Fórmula enteral si &lt;3 grupos alimentarios aceptados.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos frecuentemente necesarios</h4>
+        <p>Zinc (mejora apetito, rol en sabor) · Hierro · Vitamina D · Calcio (si no acepta lácteos) · Vitamina B12 (si no acepta carnes) · Omega-3 · Multivitamínico completo</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#0891b2">
+        <h4>🎯 Equipo multidisciplinario</h4>
+        <p>Terapeuta de alimentación/ocupacional · Psicólogo/psiquiatra · Fonoaudiólogo (disfagia) · Nutricionista pediátrica · Gastroenterólogo pediátrico si APLV u otras causas orgánicas</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>Bryant-Waugh R et al. Pediatrics 2021 · Guss CE et al. J Adolesc Health 2018</p>
+      </div>`,
+
+    'Síndrome de Down (trisomía 21)': `
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>📊 Impacto nutricional</h4>
+        <p>Riesgo alto de sobrepeso/obesidad (prevalencia 50–70% en adultos). GER reducido ~10–15% vs población general. Hipotiroidismo frecuente (contribuye a mayor peso). Cardiopatías congénitas en 40–50% (mayor gasto energético en lactancia). Dificultades de alimentación por hipotonía y macroglosia.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos</h4>
+        <p>Lactantes con cardiopatía: ${kcalR(130,150)} · Lactantes sin cardiopatía: ${kcalR(100,120)}<br>
+        Niños mayores: ${kcalR(70,90)} (usar curvas Zemel 2015, no OMS)<br>
+        Proteínas: ${protR(1.2,1.5)}</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#c47f00">
+        <h4>🚫 Vigilar exceso</h4>
+        <p>Evitar sobrealimentación desde etapa temprana. Porciones controladas. Actividad física estructurada desde la infancia. Evitar alimentos ultraprocesados, bebidas azucaradas.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos</h4>
+        <p>Vitamina D 600–1000 UI/día · Zinc 5–10 mg/día · Hierro si anemia · Tiroides (si hipotiroidismo) · Omega-3 (función cognitiva)</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#b52b22">
+        <h4>⚠️ Monitoreo</h4>
+        <p>Usar curvas Zemel 2015 (no OMS) · TSH anual · IMC cada visita · Función tiroidea · Evaluación de disfagia si hipotonía severa · Celiaquía (prevalencia aumentada)</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>Zemel BS et al. Pediatrics 2015 · Adelekan TA et al. Pediatrics 2012 · Bull MJ, Comm Genet Pediatr 2022</p>
+      </div>`,
+
+    'Prematuridad extrema (<28 semanas)': `
+      <div class="dx-plan-section" style="border-left-color:#7c3aed">
+        <h4>📊 Impacto nutricional</h4>
+        <p>RN prematuro extremo: reservas mínimas, inmadurez GI, alta demanda para crecimiento cerebral acelerado. "Déficit energético acumulado" en primeras semanas asociado a peor neurodesarrollo. Meta: replicar crecimiento fetal intrauterino.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos</h4>
+        <p>Energía: ${kcalR(110,150)} · Proteínas: ${p ? `<strong>${(3.5*p).toFixed(1)}–${(4.5*p).toFixed(1)} g/día</strong>` : '<strong>3.5–4.5 g/kg/día</strong>'}<br>
+        <strong>Nutrición parenteral desde primeras 2h de vida:</strong> AA 1.5g/kg/día → 3.5–4g/kg/día en 48h · Glucosa 6–8 mg/kg/min · Lípidos 0.5–1 g/kg/día → 3g/kg/día<br>
+        Transición a enteral mínima desde día 1 (1–2 mL/kg/toma)</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#7c3aed">
+        <h4>🍼 Fórmula / alimentación</h4>
+        <p><strong>Preferencia: Leche Materna propia</strong> (inmunológica + nutricional). Enriquecer con HMF (Human Milk Fortifier) desde que tolera 100 mL/kg/día.<br>
+        Si no disponible LM: <strong>NAN Prematuros o NutriBaby Prematuros</strong> al 16% (0.8 kcal/mL).</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos críticos</h4>
+        <p>Vitamina D 400–800 UI/día · Calcio 120–140 mg/kg/día · Fósforo 60–90 mg/kg/día (osteopenia) · Hierro 2–4 mg/kg/día desde semanas 4–6 de vida · Vitamina A 1500–5000 UI/día (prevención DBP) · DHA 55–60 mg/kg/día</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#b52b22">
+        <h4>⚠️ Monitoreo</h4>
+        <p>Glucemia cada 4–6h · Electrolitos diarios · Triglicéridos (lípidos IV) · Fosfatasa alcalina semanal · Peso diario · Longitud y PC semanal · Velocidad de crecimiento: meta 15–20 g/kg/día</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>ESPGHAN Preterm EN Position Paper 2022 · ASPEN Preterm PN Guidelines 2023 · Koletzko B et al. J Pediatr Gastroenterol Nutr 2014</p>
+      </div>`,
+
+    'Enfermedad de Crohn': `
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>📊 Impacto nutricional</h4>
+        <p>Desnutrición en 75–85% al diagnóstico. Causas: malabsorción, hipercatabolismo inflamatorio, anorexia, restricciones dietéticas incorrectas. El retraso del crecimiento precede al diagnóstico en 35% de casos pediátricos.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos</h4>
+        <p>Brote activo: ${kcalR(120,140)} · Remisión: ${kcalR(100,120)} · Proteínas: ${protR(1.5,2.5)}</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#7c3aed">
+        <h4>🍼 Nutrición enteral exclusiva (NEE) — PRIMERA LÍNEA en Crohn pediátrico</h4>
+        <p><strong>NEE × 6–8 semanas induce remisión en 80% (igual que corticoides, sin efectos sobre crecimiento)</strong><br>
+        Fórmula polimérica: Pediasure / Enterex Total (igual eficacia que elemental) a 100% de la alimentación.<br>
+        Reintroducción gradual de alimentos tras remisión. Dieta de exclusión Crohn (CD-TREAT) como mantenimiento.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#e07b2a">
+        <h4>💊 Suplementos</h4>
+        <p>Hierro IV (si anemia y mala absorción oral) · Ácido fólico 1mg/día (especialmente con metotrexato) · Vitamina B12 (si afectación ileal) · Vitamina D 1000–2000 UI/día · Zinc 10–25mg/día</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>Ruemmele FM et al. ESPGHAN/ECCO IBD Guidelines 2014 · Sigall-Boneh R et al. IBD 2021 · Pigneur B, Ruemmele FM J Pediatr Gastroenterol Nutr 2019</p>
+      </div>`,
+
+    'Diabetes mellitus tipo 1': `
+      <div class="dx-plan-section" style="border-left-color:#b52b22">
+        <h4>📊 Impacto nutricional</h4>
+        <p>DM1: deficiencia absoluta de insulina. La dieta no cura la DM1 pero es fundamental para el control glucémico. Objetivo: glucemia en rango (70–180 mg/dL 70% del tiempo, TIR) sin restricciones innecesarias que afecten crecimiento.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#1a7a50">
+        <h4>⚡ Requerimientos</h4>
+        <p>Energía: ${kcalR(100,120)} (igual que niño sano para la edad) · Proteínas: ${protR(1.2,1.8)}<br>
+        Distribución: 45–55% CHO · 25–35% grasa · 15–20% proteína<br>
+        Conteo de CHO: base del manejo. Ratio insulina:CHO individualizado.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#c47f00">
+        <h4>🚫 Orientación dietética</h4>
+        <p>No hay alimentos prohibidos en DM1, solo requieren ajuste de insulina. Evitar jugos y bebidas azucaradas de absorción rápida (fuera de hipoglucemias). Fibra en cada comida (enlentece absorción de CHO). Patrón mediterráneo o bajo en CHO refinados como referencia.</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#b52b22">
+        <h4>⚠️ Monitoreo</h4>
+        <p>HbA1c cada 3 meses · Glucemia preprandial y postprandial · TIR (tiempo en rango) · Peso/talla cada visita · Función tiroidea anual (celiaquía y tiroiditis asociadas) · Screening celiaquía al diagnóstico</p>
+      </div>
+      <div class="dx-plan-section" style="border-left-color:#334155">
+        <h4>📚 Referencias</h4>
+        <p>ISPAD Clinical Practice Consensus Guidelines 2022 · ADA Standards of Medical Care 2024 · Smart C et al. Pediatr Diabetes 2018</p>
+      </div>`,
+  };
+
+  // Try to find exact match, then partial match
+  let plan = plans[dx];
+  if(!plan){
+    // Search for partial match
+    const key = Object.keys(plans).find(k =>
+      k.toLowerCase().includes(dx.toLowerCase().substring(0,12)) ||
+      dx.toLowerCase().includes(k.toLowerCase().substring(0,12))
+    );
+    if(key) plan = plans[key];
+  }
+
+  if(plan){
+    // Personalize with patient data
+    let header = `<div style="background:var(--azc);border:1.5px solid var(--azm);border-radius:8px;padding:9px 13px;margin-bottom:12px;font-size:12.5px">
+      <strong style="color:var(--az)">🔬 ${dx}</strong>`;
+    if(p && ea) header += `<br><span style="color:var(--txs)">Plan adaptado para: ${ea>0?Math.floor(ea)+'a '+edadM%12+'m':edadM+'m'} · ${p}kg · ${sexoT}</span>`;
+    header += `</div>`;
+    return header + plan;
+  }
+
+  // Fallback for diagnoses without specific plan
+  return `<div class="dx-plan-section" style="border-left-color:#6b7280">
+    <h4>📋 ${dx}</h4>
+    <p>Plan nutricional general para este diagnóstico:</p>
+    <div class="dx-info">Para este diagnóstico específico, se recomienda evaluación individualizada por nutricionista pediátrica especializada. Los principios generales incluyen:</div>
+    <ul style="margin:8px 0 0 16px;line-height:2">
+      <li>Evaluación del estado nutricional con Z-scores OMS</li>
+      <li>Energía: ${kcalR(100,120)} como punto de partida</li>
+      <li>Proteínas: ${protR(1.5,2.0)}</li>
+      <li>Soporte nutricional enteral si ingesta oral &lt;75% de metas</li>
+      <li>Micronutrientes: vitamina D, zinc, hierro según déficits detectados</li>
+      <li>Seguimiento mensual de peso, talla y Z-scores</li>
+      <li>Consultar guías específicas: ASPEN, ESPGHAN, sociedad de especialidad correspondiente</li>
+    </ul>
+  </div>`;
+}
+
+buildDxPanel();
+
+/* ═══════════════════ EXPORTAR PDF ═══════════════════ */
+
+
+buildDxPanel();
+
+/* ═══════════════════ EXPORTAR PDF ═══════════════════ */
+function toggleExportMenu(){
+  const d = document.getElementById('export-dropdown');
+  d.style.display = d.style.display === 'none' ? 'block' : 'none';
+}
+// Close dropdown if clicking outside
+document.addEventListener('click', function(e){
+  if(!document.getElementById('export-menu-wrap').contains(e.target)){
+    document.getElementById('export-dropdown').style.display = 'none';
+  }
+});
+
+function exportarWord(){
+  document.getElementById('export-dropdown').style.display = 'none';
+
+  // Collect all patient data (same as PDF)
+  const nombre=document.getElementById('nombre').value||'Sin nombre';
+  const dxTxt=document.getElementById('dx').value||'—';
+  const sexo=document.getElementById('sexo').value;
+  const sexoT=sexo==='M'?'Masculino':sexo==='F'?'Femenino':'—';
+  const edadA=Math.floor(G.edadM/12);
+  const edadMm=G.edadM%12;
+  const fn=document.getElementById('fn').value||'';
+  const fev=document.getElementById('fev').value||'';
+  const edadStr=G.edadM>0?(edadA>0?edadA+'a '+edadMm+'m':G.edadM+' meses'):'—';
+  const edadCorrStr=G.tieneCorr?(Math.floor(G.edadCM/12)>0?Math.floor(G.edadCM/12)+'a '+G.edadCM%12+'m':G.edadCM+' meses'):'—';
+  const peso=document.getElementById('peso').value||'';
+  const talla=document.getElementById('talla').value||'';
+  const pc=document.getElementById('pc').value||'';
+  const pb=document.getElementById('pb').value||'';
+
+  const imc=document.getElementById('r-imc').textContent;
+  const ppt=document.getElementById('r-ppt').textContent;
+
+  // Z-scores
+  const zCards=document.getElementById('zscores-gen');
+  let zHTML='';
+  if(zCards){
+    const cards=zCards.querySelectorAll('.mc');
+    cards.forEach(c=>{
+      const titulo=c.querySelector('div')?.textContent||'';
+      const zval=c.querySelectorAll('div')[1]?.textContent||'';
+      const perc=c.querySelectorAll('div')[2]?.textContent||'';
+      const label=c.querySelectorAll('div')[4]?.textContent||'';
+      zHTML+=`<tr><td style="padding:6px 10px;border:1px solid #ddd">${titulo}</td><td style="padding:6px 10px;border:1px solid #ddd;text-align:center"><b>${zval}</b></td><td style="padding:6px 10px;border:1px solid #ddd;text-align:center">${perc}</td><td style="padding:6px 10px;border:1px solid #ddd">${label}</td></tr>`;
+    });
+  }
+
+  // Energy
+  const gerOMS=document.getElementById('r-ger-oms')?.textContent||'—';
+  const gerSch=document.getElementById('r-ger-sch')?.textContent||'—';
+  const getOMS=document.getElementById('r-get-oms')?.textContent||'—';
+  const getSch=document.getElementById('r-get-sch')?.textContent||'—';
+  const prot=document.getElementById('r-prot')?.textContent||'—';
+  const protKg=document.getElementById('r-prot-kg')?.textContent||'—';
+  const liquidos=document.getElementById('r-liq')?.textContent||'—';
+  const condSel=document.getElementById('e-cond');
+  const condT=condSel?.options[condSel.selectedIndex]?.text||'Sin condición';
+
+  // Formula
+  const fFormulaEl=document.getElementById('f-fsel');
+  const fFormula=fFormulaEl?.options[fFormulaEl.selectedIndex]?.text||'—';
+  const fConc=document.getElementById('f-ccb')?.value||'';
+  const fVol=document.getElementById('f-volt')?.value||'';
+  const fKcal=document.getElementById('f-rkcal')?.textContent||'—';
+  const fKcalKg=document.getElementById('f-rkcalkg')?.textContent||'—';
+  const fProtKg=document.getElementById('f-rpkg')?.textContent||'—';
+
+  // Dx plan
+  const dxPlanTitulo=document.getElementById('dx-plan-title')?.textContent||'';
+  const dxPlanContent=document.getElementById('dx-plan-content')?.innerHTML||'';
+
+  const fecha=fev ? new Date(fev+'T12:00:00').toLocaleDateString('es',{day:'2-digit',month:'long',year:'numeric'}) : new Date().toLocaleDateString('es',{day:'2-digit',month:'long',year:'numeric'});
+
+  // Build Word HTML document
+  const wordHTML = `
+<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<meta name="ProgId" content="Word.Document">
+<meta name="Generator" content="Microsoft Word 15">
+<title>Valoración Nutricional — ${nombre}</title>
+<style>
+  body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #1e293b; margin: 2cm; }
+  h1 { font-size: 18pt; color: #0e4a8a; border-bottom: 3px solid #0e4a8a; padding-bottom: 6pt; margin-bottom: 4pt; }
+  h2 { font-size: 13pt; color: #1a5fa8; background: #e8f0fb; padding: 5pt 8pt; margin: 16pt 0 6pt; border-left: 4pt solid #1a5fa8; }
+  h3 { font-size: 11pt; color: #0e4a8a; font-weight: bold; margin: 10pt 0 4pt; text-transform: uppercase; letter-spacing: 0.5pt; }
+  table { border-collapse: collapse; width: 100%; margin: 8pt 0; }
+  th { background: #0e4a8a; color: #fff; padding: 7pt 10pt; font-size: 10pt; text-align: left; }
+  td { padding: 6pt 10pt; border: 1pt solid #cbd5e1; font-size: 10.5pt; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  .label { color: #64748b; font-size: 9pt; }
+  .value { font-weight: bold; font-size: 11pt; }
+  .footer { font-size: 8.5pt; color: #94a3b8; border-top: 1pt solid #e2e8f0; margin-top: 20pt; padding-top: 8pt; }
+  .dx-plan-section { border-left: 4pt solid #1a5fa8; padding: 6pt 10pt; margin: 8pt 0; background: #f8fafc; }
+  .dx-plan-section h4 { font-size: 10pt; color: #1a5fa8; text-transform: uppercase; font-weight: bold; margin: 0 0 4pt; }
+  .dx-warn { color: #b52b22; font-weight: bold; }
+  .dx-info { color: #1a5fa8; }
+  .dx-ok { color: #1a7a50; }
+</style>
+</head>
+<body>
+
+<h1>🍼 Valoración Nutricional Pediátrica</h1>
+<p style="color:#64748b;font-size:9.5pt;margin:0 0 16pt">Hospital del Niño Dr. José Renán Esquivel · ${fecha}</p>
+
+<h2>👶 Datos del Paciente</h2>
+<table>
+  <tr><th colspan="4">Identificación</th></tr>
+  <tr>
+    <td><span class="label">Nombre</span><br><span class="value">${nombre}</span></td>
+    <td><span class="label">Sexo</span><br><span class="value">${sexoT}</span></td>
+    <td><span class="label">Edad cronológica</span><br><span class="value">${edadStr}</span></td>
+    ${G.tieneCorr?`<td><span class="label">Edad corregida</span><br><span class="value">${edadCorrStr}</span></td>`:'<td></td>'}
+  </tr>
+  <tr>
+    <td><span class="label">Fecha de nacimiento</span><br><span class="value">${fn||'—'}</span></td>
+    <td><span class="label">Fecha evaluación</span><br><span class="value">${fev||'—'}</span></td>
+    <td colspan="2"><span class="label">Diagnóstico</span><br><span class="value">${dxTxt}</span></td>
+  </tr>
+</table>
+
+<h2>📏 Antropometría</h2>
+<table>
+  <tr>
+    <td><span class="label">Peso</span><br><span class="value">${peso||'—'} kg</span></td>
+    <td><span class="label">Talla / Longitud</span><br><span class="value">${talla||'—'} cm</span></td>
+    <td><span class="label">Per. Cefálico</span><br><span class="value">${pc||'—'} cm</span></td>
+    <td><span class="label">Per. Braquial</span><br><span class="value">${pb||'—'} cm</span></td>
+  </tr>
+  <tr>
+    <td><span class="label">IMC</span><br><span class="value">${imc} kg/m²</span></td>
+    <td><span class="label">% Peso/Talla (Waterlow)</span><br><span class="value">${ppt}</span></td>
+    <td colspan="2"></td>
+  </tr>
+</table>
+
+${zHTML ? `
+<h3>Z-scores OMS 2006 — Método LMS exacto</h3>
+<table>
+  <tr><th>Indicador</th><th>Z-score</th><th>Percentil</th><th>Clasificación</th></tr>
+  ${zHTML}
+</table>` : ''}
+
+<h2>⚡ Necesidades Energéticas</h2>
+<table>
+  <tr><th>Parámetro</th><th>OMS</th><th>Schofield</th></tr>
+  <tr><td>GER (kcal/día)</td><td>${gerOMS}</td><td>${gerSch}</td></tr>
+  <tr><td>GET (kcal/día)</td><td>${getOMS}</td><td>${getSch}</td></tr>
+  <tr><td colspan="3"><span class="label">Condición especial:</span> ${condT}</td></tr>
+  <tr>
+    <td><b>Proteínas</b></td>
+    <td colspan="2">${protKg} → <b>${prot}</b></td>
+  </tr>
+  <tr><td>Líquidos (Holliday-Segar)</td><td colspan="2">${liquidos}</td></tr>
+</table>
+
+<h2>🍼 Plan de Fórmula</h2>
+<table>
+  <tr>
+    <td><span class="label">Fórmula</span><br><span class="value">${fFormula}</span></td>
+    <td><span class="label">Concentración</span><br><span class="value">${fConc||'—'}%</span></td>
+    <td><span class="label">Volumen</span><br><span class="value">${fVol||'—'} mL</span></td>
+  </tr>
+  <tr>
+    <td><span class="label">kcal totales/día</span><br><span class="value">${fKcal}</span></td>
+    <td><span class="label">kcal/kg/día</span><br><span class="value">${fKcalKg}</span></td>
+    <td><span class="label">Proteína/kg/día</span><br><span class="value">${fProtKg}</span></td>
+  </tr>
+</table>
+
+${dxPlanContent ? `
+<h2>🔬 Plan Nutricional por Diagnóstico</h2>
+<p style="font-size:9.5pt;color:#64748b;margin-bottom:8pt">${dxPlanTitulo}</p>
+${dxPlanContent}` : ''}
+
+<div class="footer">
+  ⚕️ Valoración Nutricional Pediátrica — Uso exclusivo profesional<br>
+  Generado: ${fecha} · Hospital del Niño Dr. José Renán Esquivel · Este documento es un apoyo clínico, no reemplaza el criterio médico.
+</div>
+
+</body>
+</html>`;
+
+  // Download as .doc file
+  const blob = new Blob(['\ufeff'+wordHTML], {type:'application/msword;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Valoracion_Nutricional_' + nombre.replace(/\s+/g,'_') + '_' + (fev||new Date().toISOString().split('T')[0]) + '.doc';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function exportarPDF(){
+  // Recopilar todos los datos actuales
+  const nombre=document.getElementById('nombre').value||'Sin nombre';
+  const dx=document.getElementById('dx').value||'—';
+  const sexo=document.getElementById('sexo').value;
+  const sexoT=sexo==='M'?'Masculino':sexo==='F'?'Femenino':'—';
+  const edadA=Math.floor(G.edadM/12);
+  const edadMm=G.edadM%12;
+  const fn=document.getElementById('fn').value||'';
+  const fev=document.getElementById('fev').value||'';
+  const edadStr=G.edadM>0?(edadA>0?edadA+'a '+edadMm+'m':G.edadM+' meses'):'—';
+  const edadCorrStr=G.tieneCorr?(Math.floor(G.edadCM/12)>0?Math.floor(G.edadCM/12)+'a '+G.edadCM%12+'m':G.edadCM+' meses'):'—';
+  const peso=document.getElementById('peso').value||'';
+  const talla=document.getElementById('talla').value||'';
+  const pc=document.getElementById('pc').value||'';
+  const pb=document.getElementById('pb').value||'';
+  const pt=document.getElementById('pt').value||'';
+  const tdiana=document.getElementById('tdiana').value||'';
+
+  const imc=document.getElementById('r-imc').textContent;
+  const ppt=document.getElementById('r-ppt').textContent;
+  const ambc=document.getElementById('r-ambc').textContent;
+  const gbc=document.getElementById('r-gbc').textContent;
+
+  const curva=CURVAS[curCurve];
+  const zgenEl=document.getElementById('zscores-gen');
+  const zescEl=document.getElementById('zscores-esp');
+  const clasEl=document.getElementById('clasificacion');
+
+  // Energía
+  const epeso=G.peso||peso||'';
+  const gerOMS=document.getElementById('e-ger-oms').textContent;
+  const gerSCH=document.getElementById('e-ger-sch').textContent;
+  const getOMS=document.getElementById('e-get-oms').textContent;
+  const getSCH=document.getElementById('e-get-sch').textContent;
+  const eKkgOMS=document.getElementById('e-get-oms-kg').textContent;
+  const eKkgSCH=document.getElementById('e-get-sch-kg').textContent;
+  const eprot=document.getElementById('e-prot').textContent;
+  const eprotkg=document.getElementById('e-prot-kg').textContent;
+  const evol=document.getElementById('e-vol').textContent;
+  const condSel=document.getElementById('e-cond');
+  const condT=condSel.options[condSel.selectedIndex]?.text||'—';
+  const estresSel=document.getElementById('e-estres');
+  const estresT=estresSel.options[estresSel.selectedIndex]?.text||'—';
+  const actSel=document.getElementById('e-act');
+  const actT=actSel.options[actSel.selectedIndex]?.text||'—';
+
+  // Fórmula
+  const fFormula=getFF().n||'—';
+  const fConc=document.getElementById('f-rconc').textContent;
+  const fKcal=document.getElementById('f-rk').textContent;
+  const fKml=document.getElementById('f-rkml').textContent;
+  const fProt=document.getElementById('f-rp').textContent;
+  const fVolt=document.getElementById('f-volt').value||'';
+  const fPeso=G.peso||'';
+  const fKcalKg=document.getElementById('f-rkkg').textContent;
+  const fProtKg=document.getElementById('f-rpkg').textContent;
+  const fVolKg=document.getElementById('f-rvkg').textContent;
+  const fEdadEl=document.getElementById('f-edad');
+  const fEdadT=fEdadEl.options[fEdadEl.selectedIndex]?.text||'—';
+
+  // Tabla comparativa diluciones
+  const dilTbody=document.getElementById('f-diltbody');
+  let dilRows='';
+  if(dilTbody){
+    dilTbody.querySelectorAll('tr').forEach(tr=>{
+      const isHL=tr.classList.contains('hl');
+      const tds=[...tr.querySelectorAll('td')].map(td=>td.textContent);
+      dilRows+=`<tr style="${isHL?'background:#e8f0fb;font-weight:700;color:#1a5fa8':''}">
+        ${tds.map((t,i)=>`<td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;${i>0?'text-align:center':''}">${t}</td>`).join('')}
+      </tr>`;
+    });
+  }
+
+  // Z-scores texto plano
+  const zgenText=zgenEl?.innerText||'';
+  const zescText=zescEl?.innerText||'';
+  const clasText=clasEl?.innerText||'';
+
+  const fecha=new Date().toLocaleDateString('es-PA',{day:'2-digit',month:'long',year:'numeric'});
+
+  const html=`<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Valoración Nutricional — ${nombre}</title>
+<style>
+  @page{margin:18mm 16mm}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#1f2937;background:#fff}
+  .page{max-width:210mm;margin:0 auto;padding:0}
+
+  /* ENCABEZADO */
+  .hdr-pdf{background:linear-gradient(135deg,#0e4a8a,#1a5fa8);color:#fff;padding:14px 20px;border-radius:0 0 10px 10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .hdr-pdf h1{font-size:16px;font-weight:700}
+  .hdr-pdf .sub{font-size:10px;opacity:.8;margin-top:3px}
+  .hdr-pdf .fecha{font-size:11px;opacity:.8;text-align:right}
+
+  /* SECCIONES */
+  .sec{border:1px solid #dde3ec;border-radius:8px;margin-bottom:12px;overflow:hidden;page-break-inside:avoid}
+  .sec-h{background:#1a5fa8;color:#fff;padding:7px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  .sec-h.ve{background:#1a7a50}
+  .sec-h.mo{background:#7c3aed}
+  .sec-h.na{background:#d4720a}
+  .sec-body{padding:10px 14px}
+
+  /* GRIDS */
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+
+  /* CAMPOS */
+  .campo{margin-bottom:6px}
+  .campo .lbl{font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
+  .campo .val{font-size:13px;font-weight:600;color:#1f2937}
+
+  /* MÉTRICAS */
+  .mc{background:#f3f4f6;border-radius:6px;padding:8px 10px;border:1px solid #e5e7eb}
+  .mc .v{font-size:16px;font-weight:700;color:#1a5fa8}
+  .mc .l{font-size:10px;color:#6b7280;margin-top:2px}
+  .mc.ve .v{color:#1a7a50}
+  .mc.mo .v{color:#7c3aed}
+
+  /* TABLA */
+  table{width:100%;border-collapse:collapse;font-size:11.5px}
+  th{background:#1a5fa8;color:#fff;padding:6px 8px;text-align:left;font-size:10.5px}
+  th.c{text-align:center}
+  td{padding:5px 8px;border-bottom:1px solid #f3f4f6}
+  td.c{text-align:center}
+  td.r{text-align:right;font-weight:600}
+  .sh-row td{background:#e8f0fb;font-weight:700;color:#1a5fa8;font-size:10.5px;text-transform:uppercase}
+
+  /* CURVA BADGE */
+  .curve-badge{display:inline-block;background:#f3eeff;color:#7c3aed;border:1px solid #c4a8f8;border-radius:5px;padding:3px 10px;font-size:11px;font-weight:600;margin-bottom:8px}
+
+  /* NOTAS */
+  .nota-box{background:#e8f0fb;border-left:3px solid #1a5fa8;border-radius:0 6px 6px 0;padding:7px 10px;font-size:11px;color:#1a3a60;margin-top:8px;line-height:1.5}
+  .nota-box.ve{background:#e4f5ed;border-color:#1a7a50;color:#0d4a2a}
+  .nota-box.warn{background:#fdf0e3;border-left-color:#d4720a;color:#7a3a00}
+
+  /* FOOTER */
+  .footer{margin-top:14px;padding-top:10px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;display:flex;justify-content:space-between}
+
+  /* PRINT */
+  @media print{
+    body{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+    .no-print{display:none}
+    .page{padding:0}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- BOTÓN IMPRIMIR -->
+  <div class="no-print" style="text-align:right;margin-bottom:10px">
+    <button onclick="window.print()" style="background:#1a5fa8;color:#fff;border:none;border-radius:7px;padding:9px 22px;font-size:13px;font-weight:600;cursor:pointer">🖨️ Imprimir / Guardar PDF</button>
+  </div>
+
+  <!-- ENCABEZADO -->
+  <div class="hdr-pdf">
+    <div>
+      <h1>🍼 Valoración Nutricional Pediátrica</h1>
+      <div class="sub">Resumen clínico generado automáticamente</div>
+    </div>
+    <div class="fecha">📅 ${fecha}</div>
+  </div>
+
+  <!-- DATOS PACIENTE -->
+  <div class="sec">
+    <div class="sec-h">👶 Datos del Paciente</div>
+    <div class="sec-body">
+      <div class="g3">
+        <div class="campo"><div class="lbl">Nombre / ID</div><div class="val">${nombre}</div></div>
+        <div class="campo"><div class="lbl">Diagnóstico</div><div class="val">${dx}</div></div>
+        <div class="campo"><div class="lbl">Sexo</div><div class="val">${sexoT}</div></div>
+        <div class="campo"><div class="lbl">Edad</div><div class="val">${edadStr}</div></div>
+        ${peso?`<div class="campo"><div class="lbl">Peso</div><div class="val">${peso} kg</div></div>`:''}
+        ${talla?`<div class="campo"><div class="lbl">Talla / Longitud</div><div class="val">${talla} cm</div></div>`:''}
+        ${pc?`<div class="campo"><div class="lbl">Perímetro cefálico</div><div class="val">${pc} cm</div></div>`:''}
+        ${pb?`<div class="campo"><div class="lbl">Perímetro braquial</div><div class="val">${pb} cm</div></div>`:''}
+        ${pt?`<div class="campo"><div class="lbl">Pliegue tricipital</div><div class="val">${pt} mm</div></div>`:''}
+        ${tdiana?`<div class="campo"><div class="lbl">Talla diana parental</div><div class="val">${tdiana} cm</div></div>`:''}
+      </div>
+    </div>
+  </div>
+
+  <!-- ANTROPOMETRÍA -->
+  <div class="sec">
+    <div class="sec-h">📊 Índices Antropométricos</div>
+    <div class="sec-body">
+      <div class="g4" style="margin-bottom:10px">
+        <div class="mc"><div class="v">${imc}</div><div class="l">IMC (kg/m²)</div></div>
+        <div class="mc"><div class="v">${ppt}</div><div class="l">% Peso/Talla (Waterlow)</div></div>
+        <div class="mc"><div class="v">${ambc}</div><div class="l">Área Musc. Brazo (cm²)</div></div>
+        <div class="mc"><div class="v">${gbc}</div><div class="l">Grasa corporal estimada</div></div>
+      </div>
+
+      <div class="curve-badge">📌 Curva seleccionada: ${curva.name}</div>
+      <div style="font-size:11px;color:#6b7280;margin-bottom:8px">Referencia: ${curva.ref}</div>
+
+      ${zgenText?`<div style="font-size:11px;margin-bottom:8px;line-height:1.7;white-space:pre-line">${zgenText.replace('Z-scores OMS (referencia general)','<strong>Z-scores OMS:</strong>')}</div>`:''}
+      ${zescText&&curCurve!=='oms'?`<div class="nota-box"><strong>Evaluación curva especial:</strong><br>${zescText.replace(/\n/g,'<br>')}</div>`:''}
+      ${clasText?`<div style="margin-top:8px;font-size:11px;line-height:1.6"><strong>Clasificación nutricional:</strong> ${clasText}</div>`:''}
+    </div>
+  </div>
+
+  <!-- NECESIDADES ENERGÉTICAS -->
+  <div class="sec">
+    <div class="sec-h ve">⚡ Necesidades Energéticas</div>
+    <div class="sec-body">
+      <div class="g2" style="margin-bottom:10px">
+        <div>
+          <div style="font-size:10px;color:#6b7280;text-transform:uppercase;margin-bottom:6px">GER — Gasto Energético en Reposo</div>
+          <div class="g2">
+            <div class="mc"><div class="v">${gerOMS} kcal</div><div class="l">OMS (kcal/día)</div></div>
+            <div class="mc ve"><div class="v">${gerSCH} kcal</div><div class="l">Schofield (kcal/día)</div></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:#6b7280;text-transform:uppercase;margin-bottom:6px">GET — Gasto Energético Total (con factores)</div>
+          <div class="g2">
+            <div class="mc mo"><div class="v">${getOMS} kcal</div><div class="l">GET OMS / ${eKkgOMS} kcal/kg</div></div>
+            <div class="mc mo"><div class="v">${getSCH} kcal</div><div class="l">GET Schofield / ${eKkgSCH} kcal/kg</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="g3" style="margin-bottom:10px">
+        <div class="mc"><div class="v">${eprot}</div><div class="l">Proteínas recomendadas/día</div></div>
+        <div class="mc"><div class="v">${eprotkg} g/kg/día</div><div class="l">Proteínas por kg</div></div>
+        <div class="mc"><div class="v">${evol} mL</div><div class="l">Líquidos (Holliday-Segar)</div></div>
+      </div>
+      <table>
+        <tr><th>Parámetro</th><th class="c">OMS</th><th class="c">Schofield</th><th class="c">Condición especial</th></tr>
+        <tr><td>Condición</td><td class="c" colspan="2">${condT}</td><td class="c">Factor estrés: ${estresT.split('(')[1]?.replace(')','')}</td></tr>
+        <tr><td>Factor actividad</td><td class="c" colspan="3">${actT}</td></tr>
+        <tr><td>GER (kcal/día)</td><td class="c">${gerOMS}</td><td class="c">${gerSCH}</td><td class="c">Promedio: ${Math.round((parseFloat(gerOMS)+parseFloat(gerSCH))/2)} kcal</td></tr>
+        <tr><td>GET (kcal/día)</td><td class="c">${getOMS}</td><td class="c">${getSCH}</td><td class="c">Promedio: ${Math.round((parseFloat(getOMS)+parseFloat(getSCH))/2)} kcal</td></tr>
+        <tr><td>Proteínas</td><td class="c" colspan="2">${eprotkg} g/kg/día</td><td class="c">${eprot}</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- PLAN DE FÓRMULA -->
+  <div class="sec">
+    <div class="sec-h na">🍼 Plan de Fórmula</div>
+    <div class="sec-body">
+      <div class="g3" style="margin-bottom:10px">
+        <div class="campo"><div class="lbl">Fórmula indicada</div><div class="val">${fFormula}</div></div>
+        <div class="campo"><div class="lbl">Grupo de edad</div><div class="val">${fEdadT}</div></div>
+        <div class="campo"><div class="lbl">Concentración</div><div class="val">${fConc}</div></div>
+        ${fVolt?`<div class="campo"><div class="lbl">Volumen a preparar</div><div class="val">${fVolt} mL</div></div>`:''}
+        ${fPeso?`<div class="campo"><div class="lbl">Peso paciente</div><div class="val">${fPeso} kg</div></div>`:''}
+      </div>
+
+      <div class="g4" style="margin-bottom:12px">
+        <div class="mc"><div class="v">${fKcal}</div><div class="l">kcal totales</div></div>
+        <div class="mc"><div class="v">${fKml}</div><div class="l">kcal / mL</div></div>
+        <div class="mc ve"><div class="v">${fProt}</div><div class="l">g proteína</div></div>
+        ${fPeso?`<div class="mc ve"><div class="v">${fKcalKg} kcal/kg</div><div class="l">Energía por kg</div></div>`:''}
+      </div>
+
+      ${fPeso?`<div class="g3" style="margin-bottom:12px">
+        <div class="mc"><div class="v">${fKcalKg}</div><div class="l">kcal/kg/día</div></div>
+        <div class="mc"><div class="v">${fProtKg} g/kg</div><div class="l">Proteína/kg/día</div></div>
+        <div class="mc"><div class="v">${fVolKg}</div><div class="l">mL/kg/día</div></div>
+      </div>`:''}
+
+      <div style="font-size:10.5px;font-weight:700;color:#1a5fa8;text-transform:uppercase;margin:10px 0 6px;padding-left:4px;border-left:3px solid #1a5fa8">Comparativa de diluciones</div>
+      <table>
+        <tr>
+          <th>Dilución</th><th class="c">Conc. (%)</th><th class="c">kcal/mL</th>
+          <th class="c">kcal totales</th><th class="c">Prot (g)</th>
+          ${fPeso?'<th class="c">kcal/kg/d</th><th class="c">g prot/kg</th>':''}
+        </tr>
+        ${dilRows}
+      </table>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>⚕️ Valoración Nutricional Pediátrica — Uso exclusivo profesional</span>
+    <span>Generado: ${fecha} · Este documento es un apoyo clínico, no reemplaza el criterio médico</span>
+  </div>
+
+</div>
+</body>
+</html>`;
+
+  const ventana=window.open('','_blank','width=900,height=700');
+  ventana.document.write(html);
+  ventana.document.close();
+}
+</script>
+</body>
+</html>
